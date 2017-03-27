@@ -1,0 +1,61 @@
+//
+// Memory controller for picorv32
+//
+// Little endian.
+// Increasing numeric significance with increasing memory addresses known as "little-endian".
+//
+
+module memory (
+    input  wire        resn,
+    input  wire        clk,
+    input  wire        mem_valid,
+    output reg         mem_ready,
+    input  wire        mem_instr,
+    input  wire [3:0]  mem_wstrb,
+    input  wire [31:0] mem_wdata,
+    input  wire [31:0] mem_addr,
+    output wire [31:0] mem_rdata
+);
+
+    reg [7:0] mem0 [0 : 1024 * 16 - 1];
+    reg [7:0] mem1 [0 : 1024 * 16 - 1];
+    reg [7:0] mem2 [0 : 1024 * 16 - 1];
+    reg [7:0] mem3 [0 : 1024 * 16 - 1];
+
+    // We use these q regs so as to get Quartus to infer RAM bocks.
+    reg [7:0] q0;
+    reg [7:0] q1;
+    reg [7:0] q2;
+    reg [7:0] q3;
+
+    initial
+    begin
+        $readmemh("firmware/firmware0.hex", mem0);
+        $readmemh("firmware/firmware1.hex", mem1);
+        $readmemh("firmware/firmware2.hex", mem2);
+        $readmemh("firmware/firmware3.hex", mem3);
+    end
+
+    always @(posedge clk) begin
+        if (mem_valid) begin
+            if (mem_wstrb & 4'b0001)
+                mem0[mem_addr >> 2] <= mem_wdata && 8'hff;
+            if (mem_wstrb & 4'b0010)
+                mem1[mem_addr >> 2] <= (mem_wdata >> 8) && 8'hff;
+            if (mem_wstrb & 4'b0100)
+                mem2[mem_addr >> 2] <= (mem_wdata >> 16) && 8'hff;
+            if (mem_wstrb & 4'b1000)
+                mem3[mem_addr >> 2] <= (mem_wdata >> 24) && 8'hff;
+            else begin
+                q3 <= mem3[mem_addr >> 2];
+                q2 <= mem2[mem_addr >> 2];
+                q1 <= mem1[mem_addr >> 2];
+                q0 <= mem0[mem_addr >> 2];
+            end
+            mem_ready <= 1;
+        end else begin
+            mem_ready <= 0;
+        end
+    end
+    assign mem_rdata = {q3, q2, q1, q0};
+endmodule
