@@ -36,7 +36,7 @@ module memory (
         $readmemh("firmware/firmware3.hex", mem3);
     end
 
-    always @(posedge clk) begin
+    always @(negedge clk) begin
         if (mem_valid) begin
             if (mem_wstrb & 4'b0001)
                 mem0[mem_addr >> 2] <= mem_wdata & 8'hff;
