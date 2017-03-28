@@ -52,6 +52,11 @@ module memory_tb;
     defparam cpu.TWO_CYCLE_COMPARE = 1;
     defparam cpu.TWO_CYCLE_ALU = 1;
     defparam cpu.ENABLE_TRACE = 1;
+    defparam cpu.LATCHED_MEM_RDATA = 1;
+    defparam cpu.BARREL_SHIFTER = 1;  // Cost zero LEs !
+    defparam cpu.ENABLE_PCPI = 1;     //
+    defparam cpu.ENABLE_FAST_MUL = 1; // MUL and DIV cost 564 LE and !
+    defparam cpu.ENABLE_DIV = 1;      //
 
     picorv32 cpu (
         .clk(clk),
