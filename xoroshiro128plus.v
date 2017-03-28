@@ -1,7 +1,8 @@
 //
 // The xoroshiro128+ PRNG
 //
-
+// From the C source found here : http://xoroshiro.di.unimi.it/
+//
 module xoroshiro128plus (input resn, input clk, output [63:0] out);
     reg  [63:0] s0, s1, ss;
     wire [63:0] sx = s0 ^ s1;
@@ -17,5 +18,5 @@ module xoroshiro128plus (input resn, input clk, output [63:0] out);
             ss <= s0 + s1;
         end
     end
-    assign out = ss[63:0];// Quartus Prime Verilog Template
+    assign out = ss[63:0];
 endmodule

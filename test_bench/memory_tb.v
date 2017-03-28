@@ -127,9 +127,8 @@ module memory_tb;
 
     // Monitor all signals
     initial  begin
-        $display("\tclk,\tresn,\tmem_valid,\tmem_ready,\tmem_instr,\tmem_addr,\tmem_wstrb,\tmem_wdata,\tmem_rdata");
-
-        $monitor("\t%b,\t%b,\t%b,\t\t%b,\t\t%b,\t\t%h,\t%b\t\t%h\t%h", clk, resn, mem_valid, mem_ready, mem_instr, mem_addr, mem_wstrb, mem_wdata, mem_rdata);
+        $display("\tclk,\tresn,\tmem_valid,\tmem_ready,\tmem_instr,\tmem_addr,\tmem_wstrb,\tmem_wdata,\tmem_rdatai\tmem3\tmem2\tmem1\tmem0");
+        $monitor("\t%b,\t%b,\t%b,\t\t%b,\t\t%b,\t\t%h,\t%b\t\t%h\t%h\t%h\t%h\t%h\t%h", clk, resn, mem_valid, mem_ready, mem_instr, mem_addr, mem_wstrb, mem_wdata, mem_rdata,  mc.mem3['h40], mc.mem2['h40],  mc.mem1['h40], mc.mem0['h40]);
     end
 
     event reset_trigger;

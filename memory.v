@@ -39,13 +39,13 @@ module memory (
     always @(posedge clk) begin
         if (mem_valid) begin
             if (mem_wstrb & 4'b0001)
-                mem0[mem_addr >> 2] <= mem_wdata && 8'hff;
+                mem0[mem_addr >> 2] <= mem_wdata & 8'hff;
             if (mem_wstrb & 4'b0010)
-                mem1[mem_addr >> 2] <= (mem_wdata >> 8) && 8'hff;
+                mem1[mem_addr >> 2] <= (mem_wdata >> 8) & 8'hff;
             if (mem_wstrb & 4'b0100)
-                mem2[mem_addr >> 2] <= (mem_wdata >> 16) && 8'hff;
+                mem2[mem_addr >> 2] <= (mem_wdata >> 16) & 8'hff;
             if (mem_wstrb & 4'b1000)
-                mem3[mem_addr >> 2] <= (mem_wdata >> 24) && 8'hff;
+                mem3[mem_addr >> 2] <= (mem_wdata >> 24) & 8'hff;
             else begin
                 q3 <= mem3[mem_addr >> 2];
                 q2 <= mem2[mem_addr >> 2];
