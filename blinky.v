@@ -114,9 +114,9 @@ module blinky (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] RND
     defparam cpu.ENABLE_TRACE = 1;
     defparam cpu.LATCHED_MEM_RDATA = 1;
     defparam cpu.BARREL_SHIFTER = 1;     // Cost zero LEs !
-    defparam cpu.ENABLE_PCPI = 1;
-    defparam cpu.ENABLE_FAST_MUL = 1;
-    defparam cpu.ENABLE_DIV = 1;
+    defparam cpu.ENABLE_PCPI = 1;        //
+    defparam cpu.ENABLE_FAST_MUL = 1;    // MUL and DIV cost 564 LE and !
+    defparam cpu.ENABLE_DIV = 1;         //
 
     picorv32 cpu (
         .clk(CLOCK_50),

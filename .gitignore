@@ -3,4 +3,9 @@ incremental_db/
 output_files/
 *.vcd
 *.vvp
+*.hex
+*.bin
+*.map
+*.elf
+*.bak
 
