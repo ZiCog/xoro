@@ -6,10 +6,10 @@ FIRMWARE_OBJS = firmware/start.o
 GCC_WARNS  = -Werror -Wall -Wextra -Wshadow -Wundef -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings
 GCC_WARNS += -Wredundant-decls -Wstrict-prototypes -Wmissing-prototypes -pedantic # -Wconversion
 TOOLCHAIN_PREFIX = $(RISCV_GNU_TOOLCHAIN_INSTALL_PREFIX)i/bin/riscv32-unknown-elf-
-COMPRESSED_ISA = 
+COMPRESSED_ISA =
 
 firmware/firmware.hex: firmware/firmware.bin firmware/makehex.py
-	python3 firmware/makehex.py $< 16384 > $@
+	python3 firmware/makehex.py $< 16384 firmware > $@
 
 firmware/firmware.bin: firmware/firmware.elf
 	$(TOOLCHAIN_PREFIX)objcopy -O binary $< $@
