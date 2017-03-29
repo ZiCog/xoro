@@ -46,16 +46,14 @@ module memory (
                 mem2[mem_addr >> 2] <= (mem_wdata >> 16) & 8'hff;
             if (mem_wstrb & 4'b1000)
                 mem3[mem_addr >> 2] <= (mem_wdata >> 24) & 8'hff;
-            else begin
-                q3 <= mem3[mem_addr >> 2];
-                q2 <= mem2[mem_addr >> 2];
-                q1 <= mem1[mem_addr >> 2];
-                q0 <= mem0[mem_addr >> 2];
-            end
             mem_ready <= 1;
         end else begin
             mem_ready <= 0;
         end
+        q3 <= mem3[mem_addr >> 2];
+        q2 <= mem2[mem_addr >> 2];
+        q1 <= mem1[mem_addr >> 2];
+        q0 <= mem0[mem_addr >> 2];
     end
     assign mem_rdata = {q3, q2, q1, q0};
 endmodule
