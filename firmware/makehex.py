@@ -39,6 +39,10 @@ for i in range(nwords):
         print("%02x" % (w[3]), file=h3)
     else:
         print("0")
+        print("%02x" % (0), file=h0)
+        print("%02x" % (0), file=h1)
+        print("%02x" % (0), file=h2)
+        print("%02x" % (0), file=h3)
 
 h0.close()
 h1.close()
