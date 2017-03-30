@@ -10,6 +10,9 @@ module memory_tb;
     reg resn;
     reg clk;
 
+
+    wire [7:0] enables;
+
     //------------------------------------------------------
     // Use the picorv32 CPU to drive the memory in this test.
 
@@ -52,7 +55,7 @@ module memory_tb;
     defparam cpu.TWO_CYCLE_COMPARE = 1;
     defparam cpu.TWO_CYCLE_ALU = 1;
     defparam cpu.ENABLE_TRACE = 1;
-    defparam cpu.LATCHED_MEM_RDATA = 1;
+    defparam cpu.LATCHED_MEM_RDATA = 0;
     defparam cpu.BARREL_SHIFTER = 1;  // Cost zero LEs !
     defparam cpu.ENABLE_PCPI = 1;     //
     defparam cpu.ENABLE_FAST_MUL = 1; // MUL and DIV cost 564 LE and !
@@ -103,6 +106,7 @@ module memory_tb;
     memory mc (
         .resn(resn),
         .clk(clk),
+        .enable(enables[0]),
         .mem_valid(mem_valid),
         .mem_ready(mem_ready),
         .mem_instr(mem_instr),
@@ -110,6 +114,11 @@ module memory_tb;
         .mem_wdata(mem_wdata),
         .mem_addr(mem_addr),
         .mem_rdata(mem_rdata)
+    );
+
+    memory_decoder md (
+        .address(mem_addr),
+        .enables(enables)
     );
 
     // Initialize all inputs

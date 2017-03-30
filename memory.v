@@ -8,8 +8,9 @@
 module memory (
     input  wire        resn,
     input  wire        clk,
+    input  wire        enable,
     input  wire        mem_valid,
-    output reg         mem_ready,
+    output wire        mem_ready,
     input  wire        mem_instr,
     input  wire [3:0]  mem_wstrb,
     input  wire [31:0] mem_wdata,
@@ -17,16 +18,17 @@ module memory (
     output wire [31:0] mem_rdata
 );
 
-    reg [7:0] mem0 [0 : 1024 * 16 - 1];
-    reg [7:0] mem1 [0 : 1024 * 16 - 1];
-    reg [7:0] mem2 [0 : 1024 * 16 - 1];
-    reg [7:0] mem3 [0 : 1024 * 16 - 1];
+    reg [7:0] mem0 [0 : 1024 * 12 - 1];
+    reg [7:0] mem1 [0 : 1024 * 12 - 1];
+    reg [7:0] mem2 [0 : 1024 * 12 - 1];
+    reg [7:0] mem3 [0 : 1024 * 12 - 1];
 
     // We use these q regs so as to get Quartus to infer RAM bocks.
     reg [7:0] q0;
     reg [7:0] q1;
     reg [7:0] q2;
     reg [7:0] q3;
+    reg rdy;
 
     initial
     begin
@@ -38,22 +40,24 @@ module memory (
 
     always @(negedge clk) begin
         if (mem_valid) begin
-            if (mem_wstrb & 4'b0001)
+            if (mem_wstrb[0])
                 mem0[mem_addr >> 2] <= mem_wdata & 8'hff;
-            if (mem_wstrb & 4'b0010)
+            if (mem_wstrb[1])
                 mem1[mem_addr >> 2] <= (mem_wdata >> 8) & 8'hff;
-            if (mem_wstrb & 4'b0100)
+            if (mem_wstrb[2])
                 mem2[mem_addr >> 2] <= (mem_wdata >> 16) & 8'hff;
-            if (mem_wstrb & 4'b1000)
+            if (mem_wstrb[3])
                 mem3[mem_addr >> 2] <= (mem_wdata >> 24) & 8'hff;
-            mem_ready <= 1;
+            rdy <= 1;
         end else begin
-            mem_ready <= 0;
+            rdy <= 0;
         end
         q3 <= mem3[mem_addr >> 2];
         q2 <= mem2[mem_addr >> 2];
         q1 <= mem1[mem_addr >> 2];
         q0 <= mem0[mem_addr >> 2];
     end
-    assign mem_rdata = {q3, q2, q1, q0};
+    assign mem_rdata = enable ? {q3, q2, q1, q0} : 'bz;
+    assign mem_ready = enable ? rdy : 'bz;
+
 endmodule
