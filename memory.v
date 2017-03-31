@@ -57,6 +57,8 @@ module memory (
         q1 <= mem1[mem_addr >> 2];
         q0 <= mem0[mem_addr >> 2];
     end
+
+    // Tri-state the outputs.
     assign mem_rdata = enable ? {q3, q2, q1, q0} : 'bz;
     assign mem_ready = enable ? rdy : 'bz;
 
