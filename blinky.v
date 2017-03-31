@@ -99,7 +99,6 @@ module blinky (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] RND
     wire [7:0] enables;
 
     memory mem (
-        .resn(reset_btn),
         .clk(CLOCK_50),
         .enable(enables[0]),
         .mem_valid(mem_valid),

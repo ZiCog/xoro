@@ -104,7 +104,6 @@ module memory_tb;
 
     // Instantiate DUT.
     memory mc (
-        .resn(resn),
         .clk(clk),
         .enable(enables[0]),
         .mem_valid(mem_valid),
