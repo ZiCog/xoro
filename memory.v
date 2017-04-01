@@ -52,6 +52,6 @@ module memory (
 
     // Tri-state the outputs.
     assign mem_rdata = enable ? q : 'bz;
-    assign mem_ready = enable ? rdy : 'bz;
+    assign mem_ready = enable ? rdy : 1'bz;
 
 endmodule

@@ -30,33 +30,19 @@
 // GPIO_17     PIN_T11      GPIO JP2, 10
 
 // Make a slow clock from a fast one
-module SlowIt (input FastClock, output reg SlowClock);
+module SlowIt (input clkIn, output clkOut);
     reg [25:0]R;
-    always @(posedge FastClock)
+    always @(posedge clkIn)
     begin
-        R = R + 1;
-        SlowClock = R[22]; //(50*10^6)/(2^24) or 19.15 Hz
+        R <= R + 1'b1;
     end
+    assign clkOut = R[4];
 endmodule
 
 // The classic "Hello world" of hardware.
-// Only this time using the xoroshiro128+ PRNG to drive 8 LEDs.
 module blinky (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] RND_OUT, output UART_TX,
     output utfart_data, output utfart_valid
 );
-
-    // Slow down the clock
-    wire slowClock;
-    SlowIt slowit (.FastClock(CLOCK_50), .SlowClock(slowClock));
-
-    // Random flashing of green LEDs.
-    xoroshiro128plus r1 (.resn(reset_btn), .clk(slowClock), .out(LED));
-
-    // Full speed random wiggle of 4 GPIO pins
-    xoroshiro128plus r2 (.resn(reset_btn), .clk(CLOCK_50), .out(RND_OUT));
-
-    // Hello world !
-    hello h1 (.resn(reset_btn), .clk(CLOCK_50), .serialOut(UART_TX));
 
     //------------------------------------------------------
     // RISCV Experiment.
@@ -98,9 +84,11 @@ module blinky (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] RND
     // Peripheral enables
     wire [7:0] enables;
 
+	 wire slowClock;
+
     memory mem (
         .clk(CLOCK_50),
-        .enable(enables[0]),
+        .enable(enables[7]),
         .mem_valid(mem_valid),
         .mem_ready(mem_ready),
         .mem_instr(mem_instr),
@@ -110,24 +98,28 @@ module blinky (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] RND
         .mem_rdata(mem_rdata)
     );
 
-    memory_decoder md (
+    address_decoder ad (
         .address(mem_addr),
         .enables(enables)
     );
 
+    SlowIt sc (
+        .clkIn(CLOCK_50),
+        .clkOut(slowClock)
+    );
 
-    defparam cpu.BARREL_SHIFTER = 1;
-    defparam cpu.TWO_CYCLE_COMPARE = 1;
-    defparam cpu.TWO_CYCLE_ALU = 1;
-    defparam cpu.ENABLE_TRACE = 1;
+
+    defparam cpu.BARREL_SHIFTER = 0;
+    defparam cpu.TWO_CYCLE_COMPARE = 0;
+    defparam cpu.TWO_CYCLE_ALU = 0;
+    defparam cpu.ENABLE_TRACE = 0;
     defparam cpu.LATCHED_MEM_RDATA = 0;
-    defparam cpu.BARREL_SHIFTER = 1;     // Cost zero LEs !
-    defparam cpu.ENABLE_PCPI = 1;        //
-    defparam cpu.ENABLE_FAST_MUL = 1;    // MUL and DIV cost 564 LE and !
-    defparam cpu.ENABLE_DIV = 1;         //
+    defparam cpu.ENABLE_PCPI = 0;        //
+    defparam cpu.ENABLE_FAST_MUL = 0;    // MUL and DIV cost 564 LE and !
+    defparam cpu.ENABLE_DIV = 0;         //
 
     picorv32 cpu (
-        .clk(CLOCK_50),
+        .clk(slowClock),
         .resetn(reset_btn),
         .trap(trap),
 
@@ -165,5 +157,9 @@ module blinky (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] RND
         .trace_valid(utfart_valid),
         .trace_data(utfart_data)
     );
+
+    assign RND_OUT = {mem_ready, mem_instr, mem_valid};
+    assign LED = {mem_addr};
+
 //------------------------------------------------------
 endmodule
