@@ -84,8 +84,6 @@ module blinky (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] RND
     // Peripheral enables
     wire [7:0] enables;
 
-	 wire slowClock;
-
     memory mem (
         .clk(CLOCK_50),
         .enable(enables[7]),
@@ -103,12 +101,6 @@ module blinky (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] RND
         .enables(enables)
     );
 
-    SlowIt sc (
-        .clkIn(CLOCK_50),
-        .clkOut(slowClock)
-    );
-
-
     defparam cpu.BARREL_SHIFTER = 0;
     defparam cpu.TWO_CYCLE_COMPARE = 0;
     defparam cpu.TWO_CYCLE_ALU = 0;
@@ -119,7 +111,7 @@ module blinky (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] RND
     defparam cpu.ENABLE_DIV = 0;         //
 
     picorv32 cpu (
-        .clk(slowClock),
+        .clk(CLOCK_50),
         .resetn(reset_btn),
         .trap(trap),
 
