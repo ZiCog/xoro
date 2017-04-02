@@ -34,7 +34,7 @@ module memory (
     end
 
     always @(negedge clk) begin
-        if (mem_valid) begin
+        if (mem_valid & enable) begin
             if (mem_wstrb[0])
                 mem0[mem_addr >> 2] <= mem_wdata[7:0];
             if (mem_wstrb[1])

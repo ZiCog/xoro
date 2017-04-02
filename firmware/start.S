@@ -1,4 +1,4 @@
-    .section .text
+.section .text
 
 start:
     // Store 4 bytes at 0x100, 0x101, 0x102, 0x103,
@@ -33,9 +33,20 @@ start:
     add     a4,a4,786
     sh      a4,0(a5)
 
-    // Clear word at 0x100
-    li      a5,256
-    sw      zero,0(a5)
+    // Write 0x55555555 to 0xffff0006
+    li      a5,-65536
+    add     a5,a5,96
+    li      a4,1431654400
+    add     a4,a4,1365
+    sw      a4,0(a5)
 
-    // Jump back and do it again
-    j       start
+loop:
+    li      a5,-65536
+    add     a5,a5,96
+    lw      a4,-20(s0)
+    sra     a4,a4,16
+    sw      a4,0(a5)
+    lw      a5,-20(s0)
+    add     a5,a5,1
+    sw      a5,-20(s0)
+    j       loop

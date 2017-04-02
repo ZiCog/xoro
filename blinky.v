@@ -29,20 +29,8 @@
 // Signal Name FPGA Pin No. Description
 // GPIO_17     PIN_T11      GPIO JP2, 10
 
-// Make a slow clock from a fast one
-module SlowIt (input clkIn, output clkOut);
-    reg [25:0]R;
-    always @(posedge clkIn)
-    begin
-        R <= R + 1'b1;
-    end
-    assign clkOut = R[4];
-endmodule
-
 // The classic "Hello world" of hardware.
-module blinky (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] RND_OUT, output UART_TX,
-    output utfart_data, output utfart_valid
-);
+module blinky (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] RND_OUT, output UART_TX);
 
     //------------------------------------------------------
     // RISCV Experiment.
@@ -84,6 +72,29 @@ module blinky (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] RND
     // Peripheral enables
     wire [7:0] enables;
 
+    reg resetn = 0;
+    reg [7:0] resetCount = 0;
+
+    always @(posedge CLOCK_50)
+    begin
+        resetCount <= resetCount + 1;
+        if (resetCount == 100) resetn <= 1;
+    end
+
+    gpio gpio (
+        .clk(CLOCK_50),
+        .resetn(resetn),
+        .enable(enables[6]),
+        .mem_valid(mem_valid),
+        .mem_ready(mem_ready),
+        .mem_instr(mem_instr),
+        .mem_wstrb(mem_wstrb),
+        .mem_wdata(mem_wdata),
+        .mem_addr(mem_addr),
+        .mem_rdata(mem_rdata),
+        .gpio(LED)
+    );
+
     memory mem (
         .clk(CLOCK_50),
         .enable(enables[7]),
@@ -112,7 +123,7 @@ module blinky (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] RND
 
     picorv32 cpu (
         .clk(CLOCK_50),
-        .resetn(reset_btn),
+        .resetn(resetn),
         .trap(trap),
 
         .mem_valid(mem_valid),
@@ -146,12 +157,12 @@ module blinky (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] RND
         .eoi(eoi),
 
         // Trace Interface
-        .trace_valid(utfart_valid),
-        .trace_data(utfart_data)
+        .trace_valid(trace_valid),
+        .trace_data(trace_data)
     );
 
     assign RND_OUT = {mem_ready, mem_instr, mem_valid};
-    assign LED = {mem_addr};
+    //assign LED = {mem_addr};
 
 //------------------------------------------------------
 endmodule
