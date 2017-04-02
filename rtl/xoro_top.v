@@ -29,11 +29,9 @@
 // Signal Name FPGA Pin No. Description
 // GPIO_17     PIN_T11      GPIO JP2, 10
 
-// The classic "Hello world" of hardware.
-module blinky (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] RND_OUT, output UART_TX);
 
-    //------------------------------------------------------
-    // RISCV Experiment.
+module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] RND_OUT, output UART_TX);
+
     wire        trap;
 
     wire        mem_valid;
@@ -162,7 +160,5 @@ module blinky (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] RND
     );
 
     assign RND_OUT = {mem_ready, mem_instr, mem_valid};
-    //assign LED = {mem_addr};
 
-//------------------------------------------------------
 endmodule
