@@ -73,14 +73,29 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
     reg resetn = 0;
     reg [7:0] resetCount = 0;
 
-    always @(posedge CLOCK_50)
+    wire CLOCK_100;
+    wire CLOCK_100_SHIFTED;
+    wire CLOCK_10;
+    wire CLOCK_LOCKED;
+
+    always @(posedge CLOCK_100)
     begin
         resetCount <= resetCount + 1;
         if (resetCount == 100) resetn <= 1;
     end
 
+    // Generate 100MHz and 10MHz clocks
+    // See Quartus PLL tutorial here: http://www.emb4fun.de/fpga/nutos1/
+    pll_sys pll_sys_inst (
+        .inclk0 (CLOCK_50),      // The input clok
+        .c0 (CLOCK_100),         // 100MHz clock
+        .c1 (CLOCK_100_SHIFTED), // 100MHz clock with phase shift of -54 degrees
+        .c2 (CLOCK_10),          // 10MHz clock
+        .locked (CLOCK_LOCKED)     // PLL is locked signal
+    );
+
     gpio gpio (
-        .clk(CLOCK_50),
+        .clk(CLOCK_100),
         .resetn(resetn),
         .enable(enables[6]),
         .mem_valid(mem_valid),
@@ -93,8 +108,21 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
         .gpio(LED)
     );
 
+    prng rand (
+        .clk(CLOCK_100),
+        .resetn(resetn),
+        .enable(enables[5]),
+        .mem_valid(mem_valid),
+        .mem_ready(mem_ready),
+        .mem_instr(mem_instr),
+        .mem_wstrb(mem_wstrb),
+        .mem_wdata(mem_wdata),
+        .mem_addr(mem_addr),
+        .mem_rdata(mem_rdata)
+    );
+
     memory mem (
-        .clk(CLOCK_50),
+        .clk(CLOCK_100),
         .enable(enables[7]),
         .mem_valid(mem_valid),
         .mem_ready(mem_ready),
@@ -110,17 +138,15 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
         .enables(enables)
     );
 
-    defparam cpu.BARREL_SHIFTER = 0;
-    defparam cpu.TWO_CYCLE_COMPARE = 0;
-    defparam cpu.TWO_CYCLE_ALU = 0;
-    defparam cpu.ENABLE_TRACE = 0;
-    defparam cpu.LATCHED_MEM_RDATA = 0;
-    defparam cpu.ENABLE_PCPI = 0;        //
-    defparam cpu.ENABLE_FAST_MUL = 0;    // MUL and DIV cost 564 LE and !
-    defparam cpu.ENABLE_DIV = 0;         //
+    defparam cpu.BARREL_SHIFTER = 1;
+    defparam cpu.TWO_CYCLE_COMPARE = 1;
+    defparam cpu.TWO_CYCLE_ALU = 1;
+    defparam cpu.ENABLE_PCPI = 1;        //
+    defparam cpu.ENABLE_FAST_MUL = 1;    // MUL and DIV cost 564 LE and !
+    defparam cpu.ENABLE_DIV = 1;         //
 
     picorv32 cpu (
-        .clk(CLOCK_50),
+        .clk(CLOCK_100),
         .resetn(resetn),
         .trap(trap),
 
@@ -159,6 +185,7 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
         .trace_data(trace_data)
     );
 
-    assign RND_OUT = {mem_ready, mem_instr, mem_valid};
+    // Put the clocks out on some pins so we can see them working.
+    assign RND_OUT = {CLOCK_100, CLOCK_100_SHIFTED, CLOCK_10, CLOCK_LOCKED};
 
 endmodule
