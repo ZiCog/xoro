@@ -425,6 +425,7 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_D[30]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_D[31]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_D[32]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_D[33]
+set_global_assignment -name VERILOG_FILE rtl/uartTx.v
 set_global_assignment -name VERILOG_FILE rtl/xoroshiro128plus.v
 set_global_assignment -name VERILOG_FILE rtl/prng.v
 set_global_assignment -name VERILOG_FILE rtl/xoro_top.v
