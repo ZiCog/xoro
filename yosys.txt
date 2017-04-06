@@ -1,0 +1,26 @@
+#
+# yosys ASIC (Not  FPGA) synthesis script
+#
+
+# Read the design
+read_verilog mydesign.v
+
+# generic synthesis, giving top  module
+synth -top mytop
+
+# mapping to mycells.lib (abc is an optimizer)
+dfflibmap -liberty mycells.lib
+abc -liberty mycells.lib
+opt_clean
+
+# Write synthesized design
+write_edif synth.edif
+
+----------------------------------------------
+
+# icoboard flow:
+
+SEE icoboard Makefile:
+http://svn.clifford.at/handicraft/2015/c3demo/fpga/Makefile
+from x3 demo:
+https://www.youtube.com/watch?v=SOn0g3k0FlE
