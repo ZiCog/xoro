@@ -29,7 +29,7 @@ module uartTx (
     reg [7:0]  state;
     reg [3:0]  bitCount;
     reg [19:0] bitTimer;
-    reg        empty;          // TRUE when ready to accept next character.
+    reg        bufferEmpty;          // TRUE when ready to accept next character.
     reg        rdy;
 
     // UART TX Logic
@@ -37,18 +37,18 @@ module uartTx (
         if (!resetn) begin
             state     <= 0;
             buffer    <= 0;
-            empty     <= 1;
+            bufferEmpty     <= 1;
             shifter   <= 0;
             serialOut <= 1;
             bitCount  <= 0;
             bitTimer  <= 0;
-            empty     <= 0;
             rdy       <= 0;
         end else begin
             if (mem_valid & enable) begin
-                if  ((mem_wstrb[0] == 1) && (empty == 1)) begin
+                if  ((mem_wstrb[0] == 1) && (bufferEmpty == 1)) begin
+            //        $display("serialOut: loading buffer");
                     buffer <= mem_wdata;
-                    empty <= 0;
+                    bufferEmpty <= 0;
                 end;
                 rdy <= 1;
             end else begin
@@ -57,18 +57,21 @@ module uartTx (
 
             // Generate bit clock timer for 115200 baud from 50MHz clock
             bitTimer <= bitTimer + 1;
-            if (bitTimer == 1302) begin
+//            if (bitTimer == 1301) begin
+            if (bitTimer == 9) begin
                 bitTimer <= 0;
             end
 
+            //$display ("bitTimer %h empty %h", bitTimer, empty);
             if (bitTimer == 0) begin
                 case (state)
                     // Idle
                     0 : begin
-                        if (!empty) begin
+                        if (bufferEmpty == 0) begin
                             shifter <= buffer;
-                            empty <= 1;
+                            bufferEmpty <= 1;
                             bitCount <= 8;
+            //                $display("serialOut: Start bit");
                             serialOut <= 0;
                             state <= 1;
                         end
@@ -78,11 +81,13 @@ module uartTx (
                     1 : begin
                         // Data bits
                         if (bitCount > 0) begin
+            //                $display("serialOut: data bit");
                             bitCount <= bitCount - 1;
                             serialOut <= shifter[0];
                             shifter <= shifter >> 1;
                         end else begin
                             // Stop bit
+            //                $display("serialOut: Stop bit");
                             serialOut <= 1;
                             state <= 0;
                         end
@@ -95,7 +100,7 @@ module uartTx (
     end
 
     // Tri-state the bus outputs.
-    assign mem_rdata = enable ? empty : 'bz;
+    assign mem_rdata = enable ? bufferEmpty : 'bz;
     assign mem_ready = enable ? rdy : 'bz;
 
 endmodule

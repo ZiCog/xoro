@@ -64,7 +64,7 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
         .c0 (CLOCK_100),         // 100MHz clock
         .c1 (CLOCK_100_SHIFTED), // 100MHz clock with phase shift of -54 degrees
         .c2 (CLOCK_10),          // 10MHz clock
-        .locked (CLOCK_LOCKED)     // PLL is locked signal
+        .locked (CLOCK_LOCKED)   // PLL is locked signal
     );
 
     memory mem (
@@ -106,7 +106,7 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
         .mem_rdata(mem_rdata)
     );
 
-    uartTx utx (
+    uartTx uartTx (
         .clk(CLOCK_100),
         .resetn(resetn),
         .enable(enables[4]),
