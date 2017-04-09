@@ -7,7 +7,9 @@
 // Coder       : Heater.
 //
 
-module uartTx (
+module uartTx  #(
+    parameter [31:0] BAUD_DIVIDER = 1301
+) (
     // Bus interface
     input  wire        clk,
     input  wire        resetn,
@@ -35,18 +37,17 @@ module uartTx (
     // UART TX Logic
     always @ (posedge clk or negedge resetn) begin
         if (!resetn) begin
-            state     <= 0;
-            buffer    <= 0;
-            bufferEmpty     <= 1;
-            shifter   <= 0;
-            serialOut <= 1;
-            bitCount  <= 0;
-            bitTimer  <= 0;
-            rdy       <= 0;
+            state       <= 0;
+            buffer      <= 0;
+            bufferEmpty <= 1;
+            shifter     <= 0;
+            serialOut   <= 1;
+            bitCount    <= 0;
+            bitTimer    <= 0;
+            rdy         <= 0;
         end else begin
             if (mem_valid & enable) begin
                 if  ((mem_wstrb[0] == 1) && (bufferEmpty == 1)) begin
-            //        $display("serialOut: loading buffer");
                     buffer <= mem_wdata;
                     bufferEmpty <= 0;
                 end;
@@ -57,12 +58,10 @@ module uartTx (
 
             // Generate bit clock timer for 115200 baud from 50MHz clock
             bitTimer <= bitTimer + 1;
-//            if (bitTimer == 1301) begin
-            if (bitTimer == 9) begin
+            if (bitTimer == BAUD_DIVIDER) begin
                 bitTimer <= 0;
             end
 
-            //$display ("bitTimer %h empty %h", bitTimer, empty);
             if (bitTimer == 0) begin
                 case (state)
                     // Idle
@@ -71,7 +70,6 @@ module uartTx (
                             shifter <= buffer;
                             bufferEmpty <= 1;
                             bitCount <= 8;
-            //                $display("serialOut: Start bit");
                             serialOut <= 0;
                             state <= 1;
                         end
@@ -81,13 +79,11 @@ module uartTx (
                     1 : begin
                         // Data bits
                         if (bitCount > 0) begin
-            //                $display("serialOut: data bit");
                             bitCount <= bitCount - 1;
                             serialOut <= shifter[0];
                             shifter <= shifter >> 1;
                         end else begin
                             // Stop bit
-            //                $display("serialOut: Stop bit");
                             serialOut <= 1;
                             state <= 0;
                         end

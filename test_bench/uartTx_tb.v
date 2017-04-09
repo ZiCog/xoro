@@ -5,6 +5,7 @@
 //
 
 module uart_tb;
+
     // Define input signals (reg)
     reg        clk;
     reg        resetn;
@@ -20,7 +21,11 @@ module uart_tb;
     wire [31:0] mem_rdata;
     wire        serialOut;    // The serial outout.
 
+    // UART TX empty status
+    reg notEmpty = 1;
+
     // Instantiate DUT.
+    defparam uartTx.BAUD_DIVIDER = 10;
     uartTx uartTx (
         .clk(clk),
         .resetn(resetn),
@@ -78,48 +83,73 @@ module uart_tb;
         end
     end
 
+    task writeBus32;
+        input [31:0] address;
+        input [31:0] data;
+
+        begin
+            @(posedge clk);
+//            $display("writeBus32:");
+            enable = 1;
+            mem_valid = 1;
+            mem_instr = 0;
+            mem_wstrb = 4'b1111;
+            mem_wdata = data;
+            mem_addr = address;
+            @(posedge clk);
+//            $display("writeBus32: Got mem_ready.");
+            enable = 0;
+            mem_valid = 0;
+            mem_instr = 0;
+            mem_wstrb = 0;
+            mem_wdata = 0;
+            mem_addr = 0;
+//            $display("writeBus32: done.");
+        end
+    endtask
+
+    task readBus32;
+        input  [31:0] address;
+        output [31:0] data;
+        begin
+            @(posedge clk);
+//            $display("readBus32:");
+            enable = 1;
+            mem_valid = 1;
+            mem_instr = 0;
+            mem_wstrb = 4'b000;
+            mem_addr = address;
+            @(posedge clk);
+//            $display("readBus32: Got mem_ready.");
+            enable = 0;
+            mem_valid = 0;
+            mem_instr = 0;
+            mem_wstrb = 0;
+            mem_wdata = 0;
+            mem_addr = 0;
+            data = mem_rdata;
+//            $display("readBus32: done. returning: %b", data);
+        end
+    endtask
+
+    reg bufferEmpty = 0;
+
     initial
     begin: TEST_CASE
         #10 -> reset_trigger;
         @ (reset_done_trigger);
         $write("reset done\n");
 
+        $write("Transmit firts char.\n");
+        writeBus32(32'hffff0040, 8'haa);
 
-        // FIXME: This is dumb, we should loop for ever reading the empty state, then sending a char 
-        @ (negedge clk);
-        $write("loading first char.\n");
-
-        mem_wdata = 8'haa;
-        mem_addr = 32'hffff0040;
-        mem_wstrb = 4'b1111;
-        mem_valid = 1;
-        enable = 1;
-
-        @(posedge mem_ready)
-        $display("mem ready !!!!");
-        mem_wdata = 8'h00;
-        mem_addr = 32'h00000000;
-        mem_wstrb = 4'b1111;
-        mem_valid = 0;
-        enable = 0;
-
-       repeat (1000) begin
-            #2000;
-            $write("loading next char.\n");
-            mem_wdata = 8'haa;
-            mem_addr = 32'hffff0040;
-            mem_wstrb = 4'b1111;
-            mem_valid = 1;
-            enable = 1;
-            @(posedge mem_ready)
-            $display("mem ready !!!!");
-            mem_wdata = 8'h00;
-            mem_addr = 32'h00000000;
-            mem_wstrb = 4'b1111;
-            mem_valid = 0;
-            enable = 0;
-       end
-       $finish;
-
+        while (1) begin
+            readBus32(32'hffff0040, bufferEmpty);
+            while (bufferEmpty != 1) begin
+                readBus32(32'hffff0040, bufferEmpty);
+            end
+            $write("Transmit following char.\n");
+            writeBus32(32'hffff0040, 8'h55);
+        end
     end
 endmodule
