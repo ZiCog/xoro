@@ -54,7 +54,7 @@ set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
 
 set_location_assignment PIN_J15 -to reset_btn
-set_location_assignment PIN_T11 -to UART_TX
+set_location_assignment PIN_A3 -to UART_TX
 set_location_assignment PIN_F13 -to RND_OUT[3]
 set_location_assignment PIN_T15 -to RND_OUT[2]
 set_location_assignment PIN_T13 -to RND_OUT[1]
@@ -187,7 +187,6 @@ set_location_assignment PIN_D3 -to GPIO_0_D[0]
 set_location_assignment PIN_B8 -to GPIO_0_IN[1]
 set_location_assignment PIN_C3 -to GPIO_0_D[1]
 set_location_assignment PIN_A2 -to GPIO_0_D[2]
-set_location_assignment PIN_A3 -to GPIO_0_D[3]
 set_location_assignment PIN_B3 -to GPIO_0_D[4]
 set_location_assignment PIN_B4 -to GPIO_0_D[5]
 set_location_assignment PIN_A4 -to GPIO_0_D[6]
@@ -425,6 +424,7 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_D[30]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_D[31]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_D[32]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_D[33]
+set_global_assignment -name VERILOG_FILE rtl/timer.v
 set_global_assignment -name VERILOG_FILE rtl/uartTx.v
 set_global_assignment -name VERILOG_FILE rtl/xoroshiro128plus.v
 set_global_assignment -name VERILOG_FILE rtl/prng.v
@@ -434,4 +434,6 @@ set_global_assignment -name VERILOG_FILE rtl/memory.v
 set_global_assignment -name VERILOG_FILE rtl/gpio.v
 set_global_assignment -name VERILOG_FILE rtl/address_decoder.v
 set_global_assignment -name CDF_FILE output_files/Chain2.cdf
+set_global_assignment -name CDF_FILE output_files/Chain1.cdf
+set_global_assignment -name CDF_FILE output_files/Chain3.cdf
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

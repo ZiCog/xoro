@@ -7,7 +7,7 @@
 
 //#define ENABLE_INSTRTST
 //#define ENABLE_RVTST
-//#define ENABLE_SIEVE
+#define ENABLE_SIEVE
 //#define ENABLE_MULTST
 //#define ENABLE_STATS
 

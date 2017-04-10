@@ -96,7 +96,7 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
         .gpio(LED)
     );
 
-    prng rand (
+    prng prng (
         .clk(CLOCK_100),
         .resetn(resetn),
         .enable(enables[5]),
@@ -121,6 +121,19 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
         .mem_addr(mem_addr),
         .mem_rdata(mem_rdata),
         .serialOut(UART_TX)
+    );
+
+    timer timer (
+        .clk(CLOCK_100),
+        .resetn(resetn),
+        .enable(enables[3]),
+        .mem_valid(mem_valid),
+        .mem_ready(mem_ready),
+        .mem_instr(mem_instr),
+        .mem_wstrb(mem_wstrb),
+        .mem_wdata(mem_wdata),
+        .mem_addr(mem_addr),
+        .mem_rdata(mem_rdata)
     );
 
     address_decoder ad (

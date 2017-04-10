@@ -13,11 +13,11 @@ volatile int n;
 
 void print_chr(char ch)
 {
-    for (n = 0; n < 500000; n++)
+    while (*((volatile uint32_t*)OUTPORT) == 0 )
     {
-
+        // Spin waiting for UART Tx empty.
     }
-    *((volatile uint32_t*)OUTPORT) = 'X'; //ch;
+    *((volatile uint32_t*)OUTPORT) = ch;
 }
 
 void print_str(const char *p)
@@ -35,12 +35,12 @@ void print_dec(unsigned int val)
             val = val / 10;
     }
     while (p != buffer) {
-        *((volatile uint32_t*)OUTPORT) = '0' + *(--p);
+        print_chr('0' + *(--p));
     }
 }
 
 void print_hex(unsigned int val, int digits)
 {
     for (int i = (4*digits)-4; i >= 0; i -= 4)
-        *((volatile uint32_t*)OUTPORT) = "0123456789ABCDEF"[(val >> i) % 16];
+        print_chr("0123456789ABCDEF"[(val >> i) % 16]);
 }

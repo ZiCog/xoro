@@ -4,6 +4,6 @@ void helloWorld (void)
 {
     while (1)
     {
-        print_str("Hello World");
+        print_str("Hello world!\r\n");
     }
 }
