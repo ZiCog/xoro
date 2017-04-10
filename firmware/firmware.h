@@ -33,4 +33,7 @@ void multest(void);
 // stats.c
 void stats(void);
 
+// helloWorld.c
+void helloWorld(void);
+
 #endif

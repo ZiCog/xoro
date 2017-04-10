@@ -53,13 +53,9 @@ module uart_tb;
         mem_addr = 0;
     end
 
-    // Generate a clock tick
-    always
-        #5clk = !clk;
-
     // Specify file for waveform dump
     initial  begin
-        $dumpfile ("uartTx.vcd");
+        $dumpfile ("uartTx_tb.vcd");
         $dumpvars;
     end
 
@@ -69,6 +65,11 @@ module uart_tb;
         $monitor("\t%b, \t%b, \t%b, \t%b, \t\t%b, \t\t%b, \t\t%h, \t%b\t\t%h\t%h\t%b", clk,  resetn,  enable,  mem_valid,  mem_ready,  mem_instr,  mem_addr,  mem_wstrb,  mem_wdata,  mem_rdata, serialOut);
     end
 
+    // Generate a clock tick
+    always
+        #5clk = !clk;
+
+    // Generate a reset on start up
     event reset_trigger;
     event reset_done_trigger;
 

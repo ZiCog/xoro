@@ -34,8 +34,8 @@
 
 reset_vec:
 	// no more than 16 bytes here !
-	picorv32_waitirq_insn(zero)
-	picorv32_maskirq_insn(zero, zero)
+	//picorv32_waitirq_insn(zero)
+	//picorv32_maskirq_insn(zero, zero)
 	j start
 
 
@@ -466,6 +466,11 @@ start:
 	/* call stats C code */
 	jal ra,stats
 #endif
+
+
+     /* call helloWorld C code */
+     jal ra,helloWorld
+
 
 	/* print "DONE\n" */
 	li a0,0xffff0040
