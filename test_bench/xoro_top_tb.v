@@ -38,8 +38,8 @@ module xoro_top_tb;
 
     // Monitor all signals
     initial  begin
-        $display("\tclk,\tresn,\tleds,\trnd,\tserialOut,\tmem_addr, \txoro_to.mem_rdata,\txoro_top.resetn");
-        $monitor("\t%b,\t%b,\t%b,\t%b,\t%b,\t\t%h,\t%h,\t%b", clk,  resn, leds, rnd, serialOut, xoro_top.mem_addr, xoro_top.mem_rdata, xoro_top.resetn);
+        $display("\tclk,\tresn,\tleds,\trnd,\tserialOut,\txoro_top.mem_addr, \txoro_top.mem_rdata,\txoro_top.resetn");
+        $monitor("\t%b,\t%b,\t%b,\t%b,\t%b,\t\t%h,\t\t%h,\t\t%b", clk,  resn, leds, rnd, serialOut, xoro_top.mem_addr, xoro_top.mem_rdata, xoro_top.resetn);
     end
 
     // Generate a clock tick
@@ -60,4 +60,9 @@ module xoro_top_tb;
             -> reset_done_trigger;
         end
     end
+/*
+    initial begin
+        -> reset_trigger;
+    end
+*/
 endmodule
