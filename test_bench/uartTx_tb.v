@@ -90,7 +90,6 @@ module uart_tb;
 
         begin
             @(posedge clk);
-//            $display("writeBus32:");
             enable = 1;
             mem_valid = 1;
             mem_instr = 0;
@@ -98,14 +97,12 @@ module uart_tb;
             mem_wdata = data;
             mem_addr = address;
             @(posedge clk);
-//            $display("writeBus32: Got mem_ready.");
             enable = 0;
             mem_valid = 0;
             mem_instr = 0;
             mem_wstrb = 0;
             mem_wdata = 0;
             mem_addr = 0;
-//            $display("writeBus32: done.");
         end
     endtask
 
@@ -114,14 +111,12 @@ module uart_tb;
         output [31:0] data;
         begin
             @(posedge clk);
-//            $display("readBus32:");
             enable = 1;
             mem_valid = 1;
             mem_instr = 0;
             mem_wstrb = 4'b000;
             mem_addr = address;
             @(posedge clk);
-//            $display("readBus32: Got mem_ready.");
             enable = 0;
             mem_valid = 0;
             mem_instr = 0;
@@ -129,7 +124,6 @@ module uart_tb;
             mem_wdata = 0;
             mem_addr = 0;
             data = mem_rdata;
-//            $display("readBus32: done. returning: %b", data);
         end
     endtask
 

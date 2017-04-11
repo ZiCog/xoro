@@ -50,7 +50,7 @@ module uartTx  #(
                 if  ((mem_wstrb[0] == 1) && (bufferEmpty == 1)) begin
                     buffer <= mem_wdata;
                     bufferEmpty <= 0;
-                end;
+                end
                 rdy <= 1;
             end else begin
                 rdy <= 0;
@@ -70,6 +70,8 @@ module uartTx  #(
                             shifter <= buffer;
                             bufferEmpty <= 1;
                             bitCount <= 8;
+
+                            // Start bit
                             serialOut <= 0;
                             state <= 1;
                         end
@@ -77,10 +79,10 @@ module uartTx  #(
 
                     // Transmitting
                     1 : begin
-                        // Data bits
                         if (bitCount > 0) begin
-                            bitCount <= bitCount - 1;
+                            // Data bits
                             serialOut <= shifter[0];
+                            bitCount <= bitCount - 1;
                             shifter <= shifter >> 1;
                         end else begin
                             // Stop bit
