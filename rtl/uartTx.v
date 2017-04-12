@@ -2,13 +2,13 @@
 // Design Name : uartTx
 // File Name   : uartTx.v
 // Function    : Simple UART transmiter.
-//               115200 baud when driven from 50Mhz clock.
+//               115200 baud when driven from 100Mhz clock.
 //               Single byte buffer for concurrent loading while tramitting.
 // Coder       : Heater.
 //
 
 module uartTx  #(
-    parameter [31:0] BAUD_DIVIDER = 1301
+    parameter [31:0] BAUD_DIVIDER = 868   // 100MHz / 115200 baud
 ) (
     // Bus interface
     input  wire        clk,
@@ -87,8 +87,14 @@ module uartTx  #(
                         end else begin
                             // Stop bit
                             serialOut <= 1;
-                            state <= 0;
+                            state <= 2;
                         end
+                    end
+
+                    // Second stop bit
+                    2 : begin
+                        serialOut <= 1;
+                        state <= 0;
                     end
 
                     default : ;

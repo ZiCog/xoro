@@ -23,7 +23,9 @@ void print_chr(char ch)
 void print_str(const char *p)
 {
     while (*p != 0)
+    {
         print_chr(*(p++));
+    }
 }
 
 void print_dec(unsigned int val)
