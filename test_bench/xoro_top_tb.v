@@ -2,6 +2,7 @@
 // Test bench for xoro_top.v
 //
 
+`define SIMULATION
 
 module xoro_top_tb;
 

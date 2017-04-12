@@ -36,7 +36,7 @@ module spi (
                     // Idle
                     if (trig) begin
                         if (SCLK == 0) begin
-                            // CS should be lowered on the first falling edge of SCLK
+                            // SS should be lowered on the first falling edge of SCLK
                             SS <= 0;
                             state <= 1;
                             bitCount <= 15;
@@ -61,8 +61,9 @@ module spi (
 
                 2: begin
                     if (SCLK == 1) begin
-                        // CS should be loweredraised on the last rising edge of an operational frame.
+                        // SS should be raised on the last rising edge of an operational frame.
                         SS <= 1;
+                        MOSI <= 0;
                         state <= 0;
                         bitCount <= 0;
                     end

@@ -57,6 +57,7 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
         if (resetCount == 100) resetn <= 1;
     end
 
+`ifndef SIMULATION
     // Generate 100MHz and 10MHz clocks
     // See Quartus PLL tutorial here: http://www.emb4fun.de/fpga/nutos1/
     pll_sys pll_sys_inst (
@@ -66,6 +67,9 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
         .c2 (CLOCK_10),          // 10MHz clock
         .locked (CLOCK_LOCKED)   // PLL is locked signal
     );
+`else
+    assign CLOCK_100 = CLOCK_50;
+`endif
 
     memory mem (
         .clk(CLOCK_100),
