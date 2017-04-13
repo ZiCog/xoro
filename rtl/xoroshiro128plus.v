@@ -3,6 +3,8 @@
 //
 // From the C source found here : http://xoroshiro.di.unimi.it/
 //
+`include "timescale.vh"
+
 module xoroshiro128plus (input resn, input clk, output [63:0] out);
     reg  [63:0] s0, s1, ss;
     wire [63:0] sx = s0 ^ s1;

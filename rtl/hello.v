@@ -1,3 +1,5 @@
+`include "timescale.vh"
+
 module hello (
     input  resn,      // Reset, active low.
     input  clk,
@@ -7,17 +9,17 @@ module hello (
     reg wr;
     wire [7:0] char;
     reg  [3:0] state;
-     
+
     wire empty;
-     
+
     reg [3:0] messageIdx;
-     
+
     rom message (
 	     .addr(messageIdx),
 	     .clk(clk),
 		  .q(char)
-    ); 
-	  
+    );
+
     uartTx t1 (
         .resn(resn),         		// Reset, active low.
         .clk(clk),           		// Clock, (Use 50Mhz for 115200 baud).
@@ -26,7 +28,7 @@ module hello (
         .serialOut(serialOut),	// The serial outout.
         .empty(empty)            // TRUE when ready to accept next character.
      );
-     
+
      always @(posedge clk or negedge resn)
      begin
         if (!resn) begin
@@ -45,15 +47,15 @@ module hello (
                     wr <= 0;
                     state <= 2;
                 end
-                
+
                 2: begin
                     if (empty == 1) begin
                         state <= 0;
                     end
                 end
-                
+
                 default : ;
-            endcase		  
+            endcase
         end
     end
 endmodule

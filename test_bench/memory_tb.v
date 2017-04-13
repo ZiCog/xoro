@@ -3,6 +3,7 @@
 //
 // Inspired by tutorial here: http://www.asic-world.com/verilog/art_testbench_writing.html
 //
+`include "timescale.vh"
 
 module memory_tb;
 

@@ -1,0 +1,11 @@
++incdir+inc
+test_bench/xoro_top_tb.v
+rtl/xoro_top.v
+rtl/memory.v
+rtl/gpio.v
+rtl/prng.v
+rtl/uartTx.v
+rtl/xoroshiro128plus.v
+rtl/picorv32.v
+rtl/address_decoder.v
+rtl/timer.v

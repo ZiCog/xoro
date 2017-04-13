@@ -4,6 +4,7 @@
 // Little endian.
 // Increasing numeric significance with increasing memory addresses known as "little-endian".
 //
+`include "timescale.vh"
 
 module memory (
     input  wire        clk,

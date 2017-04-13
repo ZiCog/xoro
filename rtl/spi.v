@@ -1,3 +1,5 @@
+`include "timescale.vh"
+
 module spi (
     input wire         clk,
     input wire         resn,
@@ -50,7 +52,7 @@ module spi (
                         // user should generate MOSI on the negative edges of SCLK.
                         MOSI <= wrData[bitCount];
                         bitCount <= bitCount - 1;
-                        if (bitCount == 1) begin
+                        if (bitCount == 0) begin
                             state <= 2;
                         end
                     end else begin

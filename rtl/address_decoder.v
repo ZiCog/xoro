@@ -3,6 +3,8 @@
 //
 // Here is where we decide what devices on what addresses get enabled.
 //
+`include "timescale.vh"
+
 module address_decoder (input [31:0] address, output reg [7:0] enables);
     always @(address) begin
         enables = 0;

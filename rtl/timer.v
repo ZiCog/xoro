@@ -1,6 +1,7 @@
 //
 // Timer for for picorv32
 //
+`include "timescale.vh"
 
 module timer (
     // Bus interface

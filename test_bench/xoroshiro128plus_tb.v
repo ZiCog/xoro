@@ -1,3 +1,5 @@
+`include "timescale.vh"
+
 module xoroshiro128plus_tb;
 
     /* Make a reset that pulses low once. */
@@ -24,10 +26,10 @@ module xoroshiro128plus_tb;
 
     always @ (posedge clk)
     begin
-        $write ("%h\n%h\n", y[31:0], y[63:32]); 
+        $write ("%h\n%h\n", y[31:0], y[63:32]);
     end
 
-    rnd r1 (.resn(reset), .clk(clk), .out(x)); 
+    rnd r1 (.resn(reset), .clk(clk), .out(x));
 
     shuff s1 (.x(x), .out(y));
 

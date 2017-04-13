@@ -1,4 +1,7 @@
+//
 // Single Port ROM
+//
+`include "timescale.vh"
 
 module rom
 #(parameter DATA_WIDTH=8, parameter ADDR_WIDTH=8)

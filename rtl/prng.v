@@ -2,6 +2,7 @@
 // Pseudo Random Number Generator interface.
 // Uses the xoroshiro128+ PRNG.
 //
+`include "timescale.vh"
 
 module prng (
     // Bus interface

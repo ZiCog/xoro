@@ -1,6 +1,7 @@
 //
 // Test bench for xoro_top.v
 //
+`include "timescale.vh"
 
 `define SIMULATION
 
