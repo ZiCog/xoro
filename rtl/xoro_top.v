@@ -144,12 +144,12 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
         .enables(enables)
     );
 
-    defparam cpu.BARREL_SHIFTER = 1;
-    defparam cpu.TWO_CYCLE_COMPARE = 1;
+    defparam cpu.BARREL_SHIFTER = 0;
+    defparam cpu.TWO_CYCLE_COMPARE = 0;
     defparam cpu.TWO_CYCLE_ALU = 1;
-    defparam cpu.ENABLE_PCPI = 1;        //
-    defparam cpu.ENABLE_FAST_MUL = 1;    // MUL and DIV cost 564 LE and !
-    defparam cpu.ENABLE_DIV = 1;         //
+    defparam cpu.ENABLE_PCPI = 0;        //
+    defparam cpu.ENABLE_FAST_MUL = 0;    // MUL and DIV cost 564 LE and !
+    defparam cpu.ENABLE_DIV = 0;         //
 
     picorv32 cpu (
         .clk(CLOCK_100),
