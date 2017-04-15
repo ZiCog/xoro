@@ -3,7 +3,7 @@
 //
 // For all DE0-Nano pin outs the file DE0_NANO.qsf
 //
-`include "timescale.vh"
+`include "inc/timescale.vh"
 
 module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] RND_OUT, output UART_TX);
 

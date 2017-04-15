@@ -4,7 +4,7 @@
 // Little endian.
 // Increasing numeric significance with increasing memory addresses known as "little-endian".
 //
-`include "timescale.vh"
+`include "inc/timescale.vh"
 
 module gpio (
     // Bus interface

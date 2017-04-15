@@ -6,7 +6,7 @@
 //               Single byte buffer for concurrent loading while tramitting.
 // Coder       : Heater.
 //
-`include "timescale.vh"
+`include "inc/timescale.vh"
 
 module uartTx  #(
     parameter [31:0] BAUD_DIVIDER = 868   // 100MHz / 115200 baud

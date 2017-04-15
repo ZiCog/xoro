@@ -1,9 +1,10 @@
-`include "timescale.vh"
+//`include "timescale.vh"
 
 module spi (
     input wire         clk,
     input wire         resn,
     input wire         trig,
+    output wire        done,
     output reg [15:0]  rdData,
     input wire [15:0]  wrData,
 
@@ -75,4 +76,6 @@ module spi (
             endcase
         end
     end
+
+    assign done = SS;
 endmodule
