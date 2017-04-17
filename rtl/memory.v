@@ -18,7 +18,7 @@ module memory (
     output wire [31:0] mem_rdata
 );
 
-    reg [31:0] mem [0 : 1024 * 8 - 1];
+    reg [31:0] mem [0 : 1024 * 16 - 1];
 
     reg [31:0] q;
     reg rdy;
