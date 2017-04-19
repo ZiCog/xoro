@@ -144,8 +144,8 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
         .enables(enables)
     );
 
-	 defparam cpu.ENABLE_COUNTERS = 0;
-	 defparam cpu.ENABLE_COUNTERS64 = 0; 
+    defparam cpu.ENABLE_COUNTERS = 0;
+    defparam cpu.ENABLE_COUNTERS64 = 0;
     defparam cpu.BARREL_SHIFTER = 0;
     defparam cpu.TWO_CYCLE_COMPARE = 0;
     defparam cpu.TWO_CYCLE_ALU = 0;
@@ -193,7 +193,7 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
         .trace_data(trace_data)
     );
 
-    // Put the clocks out on some pins so we can see them working.
-    assign RND_OUT = {CLOCK_100, CLOCK_100_SHIFTED, CLOCK_10, CLOCK_LOCKED};
+    // Put some memory signals out
+    assign RND_OUT = {mem_valid, mem_ready, mem_wstrb[0], mem_wstrb[1]};
 
 endmodule
