@@ -1,7 +1,7 @@
 // megafunction wizard: %RAM: 1-PORT%
 // GENERATION: STANDARD
 // VERSION: WM1.0
-// MODULE: altsyncram 
+// MODULE: altsyncram
 
 // ============================================================
 // File Name: qram32.v
@@ -19,18 +19,18 @@
 
 
 //Copyright (C) 2016  Intel Corporation. All rights reserved.
-//Your use of Intel Corporation's design tools, logic functions 
-//and other software and tools, and its AMPP partner logic 
-//functions, and any output files from any of the foregoing 
-//(including device programming or simulation files), and any 
-//associated documentation or information are expressly subject 
-//to the terms and conditions of the Intel Program License 
+//Your use of Intel Corporation's design tools, logic functions
+//and other software and tools, and its AMPP partner logic
+//functions, and any output files from any of the foregoing
+//(including device programming or simulation files), and any
+//associated documentation or information are expressly subject
+//to the terms and conditions of the Intel Program License
 //Subscription Agreement, the Intel Quartus Prime License Agreement,
-//the Intel MegaCore Function License Agreement, or other 
-//applicable license agreement, including, without limitation, 
-//that your use is for the sole purpose of programming logic 
-//devices manufactured by Intel and sold by Intel or its 
-//authorized distributors.  Please refer to the applicable 
+//the Intel MegaCore Function License Agreement, or other
+//applicable license agreement, including, without limitation,
+//that your use is for the sole purpose of programming logic
+//devices manufactured by Intel and sold by Intel or its
+//authorized distributors.  Please refer to the applicable
 //agreement for further details.
 
 
@@ -94,7 +94,7 @@ module qram32 (
 `ifdef NO_PLI
 		altsyncram_component.init_file = "../firmware/firmware.rif"
 `else
-		altsyncram_component.init_file = "../firmware/firmware.hex"
+		altsyncram_component.init_file = "../firmware/firmware.mif"
 `endif
 ,
 		altsyncram_component.intended_device_family = "Cyclone IV E",
