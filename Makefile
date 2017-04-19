@@ -71,6 +71,9 @@ synth.v: picorv32.v scripts/yosys/synth_sim.ys
 firmware/firmware.hex: firmware/firmware.bin firmware/makehex.py
 	python3 firmware/makehex.py $< 16384 firmware > $@
 
+firmware/firmware.mif: firmware/firmware.bin firmware/makemif.py
+	python3 firmware/makemif.py $< 16384 > $@
+
 firmware/firmware.bin: firmware/firmware.elf
 	$(TOOLCHAIN_PREFIX)objcopy -O binary $< $@
 	chmod -x $@

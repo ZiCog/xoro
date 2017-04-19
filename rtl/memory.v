@@ -27,13 +27,19 @@ module memory (
         .q(q)
     );
 
-    wire rdy;
+    reg rdy;
     wire [31:0] q;
     wire wren;
 
     assign wren = (enable & mem_valid & |mem_wstrb);
 
-    assign rdy = mem_valid & enable;
+    always @(posedge clk) begin
+        if (mem_valid & enable) begin
+            rdy <= 1;
+        end else begin
+            rdy <= 0;
+        end
+    end
 
     // Tri-state the outputs.
     assign mem_rdata = enable ? q : 'bz;
