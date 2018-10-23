@@ -49,14 +49,14 @@ for i in range(nwords):
         print("%02x" % (w[1]), file=h1)
         print("%02x" % (w[2]), file=h2)
         print("%02x" % (w[3]), file=h3)
-        print("\t%04x : %08x;" % (i  ,(w[3] << 24) + (w[2] << 16) + (w[1] << 8) + w[0]) , file=mif)
+        print("%04x : %08x;" % (i  ,(w[3] << 24) + (w[2] << 16) + (w[1] << 8) + w[0]) , file=mif)
     else:
         print("0")
         print("%02x" % (0),            file=h0)
         print("%02x" % (0),            file=h1)
         print("%02x" % (0),            file=h2)
         print("%02x" % (0),            file=h3)
-        print("\t%04x : %08x;" % (0, 0), file=mif)
+        print("%04x : %08x;" % (i, 0), file=mif)
 
 print ("END;", file=mif)
 
