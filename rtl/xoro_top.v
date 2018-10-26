@@ -207,10 +207,6 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
     assign GPIO_1_D[33] = CLOCK;
 
 
-    address_decoder ad (
-        .address(mem_addr),
-        .enables(enables)
-    );
 
     gpio gpio (
         .clk(CLOCK),
@@ -334,7 +330,7 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
     );
 
 	
-    // Wire-OR'ed bus for mem_ready amd mem_data from peripherals.	
+    // Peripheral's mem_ready amd mem_data.	
 	 wire mem_ready_uart;
 	 wire mem_ready_gpio;
 	 wire mem_ready_prng;
@@ -346,9 +342,29 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
 	 wire [31:0] mem_rdata_timer;
 	 wire [31:0] mem_rdata_memory;
 	 
-    assign mem_ready = mem_ready_uart | mem_ready_gpio | mem_ready_prng | mem_ready_timer | mem_ready_memory; 
-    assign mem_rdata = mem_rdata_uart | mem_rdata_gpio | mem_rdata_prng | mem_rdata_timer | mem_rdata_memory; 
+    busInterface busInterface (
+//        .clk(CLOCK),
+//        .resetn(resetn),
 	 
+		  .mem_addr(mem_addr),
+
+		  .mem_rdata_gpio(mem_rdata_gpio),
+		  .mem_rdata_uart(mem_rdata_uart),
+		  .mem_rdata_timer(mem_rdata_timer),
+		  .mem_rdata_prng(mem_rdata_prng),
+		  .mem_rdata_memory(mem_rdata_memory),
+
+		  .mem_ready_gpio(mem_ready_gpio),
+		  .mem_ready_uart(mem_ready_uart),
+		  .mem_ready_timer(mem_ready_timer),
+		  .mem_ready_prng(mem_ready_prng),
+		  .mem_ready_memory(mem_ready_memory),
+			 
+		  .mem_ready(mem_ready),
+		  .mem_rdata(mem_rdata),
+		  .enables(enables) 
+	 );
+
 	 
     defparam cpu.ENABLE_COUNTERS = 0;
     defparam cpu.ENABLE_COUNTERS64 = 0;
