@@ -47,7 +47,7 @@ module gpio (
         q <= gpio;
     end
 
-    // Bus is wire-OR'ed, be sure to zero it if not in use
+    // Wire-OR'ed bus outputs.
     assign mem_rdata = enable ? q : 1'b0;
     assign mem_ready = enable ? rdy : 1'b0;
 

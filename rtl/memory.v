@@ -41,8 +41,8 @@ module memory (
         end
     end
 
-    // Tri-state the outputs.
-    assign mem_rdata = enable ? q : 'bz;
-    assign mem_ready = enable ? rdy : 1'bz;
+    // Wire-OR'ed bus outputs.
+    assign mem_rdata = enable ? q : 32'b0;
+    assign mem_ready = enable ? rdy : 1'b0;
 
 endmodule

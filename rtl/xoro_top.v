@@ -218,13 +218,13 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
 
         .enable(enables[6]),
         .mem_valid(mem_valid),
-        .mem_ready(mem_ready),
+        .mem_ready(mem_ready_gpio),
         .mem_instr(mem_instr),
 
         .mem_addr(mem_addr),
         .mem_wstrb(mem_wstrb),
         .mem_wdata(mem_wdata),
-        .mem_rdata(mem_rdata),
+        .mem_rdata(mem_rdata_gpio),
 
         .gpio(LED)
     );
@@ -235,13 +235,13 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
 		  
         .enable(enables[4]),
         .mem_valid(mem_valid),
-        .mem_ready(mem_ready),
+        .mem_ready(mem_ready_uart),
         .mem_instr(mem_instr),
 		  
         .mem_addr(mem_addr),
         .mem_wstrb(mem_wstrb),
         .mem_wdata(mem_wdata),
-        .mem_rdata(mem_rdata),
+        .mem_rdata(mem_rdata_uart),
 
         .serialOut(UART_TX)
     );
@@ -274,7 +274,6 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
 		  
 		  .tick(testTick)
     );	 
-*/
 
     uart_test uart_test (
         .clk(CLOCK),
@@ -291,18 +290,19 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
 		  
 		  .tick(testTick)
     );	 
+*/
 	 
-/*
+
     memory mem (
         .clk(CLOCK),
         .enable(enables[7]),
         .mem_valid(mem_valid),
-        .mem_ready(mem_ready),
+        .mem_ready(mem_ready_memory),
         .mem_instr(mem_instr),
         .mem_wstrb(mem_wstrb),
         .mem_wdata(mem_wdata),
         .mem_addr(mem_addr),
-        .mem_rdata(mem_rdata)
+        .mem_rdata(mem_rdata_memory)
     );
 
 
@@ -311,12 +311,12 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
         .resetn(resetn),
         .enable(enables[5]),
         .mem_valid(mem_valid),
-        .mem_ready(mem_ready),
+        .mem_ready(mem_ready_prng),
         .mem_instr(mem_instr),
         .mem_wstrb(mem_wstrb),
         .mem_wdata(mem_wdata),
         .mem_addr(mem_addr),
-        .mem_rdata(mem_rdata)
+        .mem_rdata(mem_rdata_prng)
     );
 
 
@@ -325,15 +325,31 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
         .resetn(resetn),
         .enable(enables[3]),
         .mem_valid(mem_valid),
-        .mem_ready(mem_ready),
+        .mem_ready(mem_ready_timer),
         .mem_instr(mem_instr),
         .mem_wstrb(mem_wstrb),
         .mem_wdata(mem_wdata),
         .mem_addr(mem_addr),
-        .mem_rdata(mem_rdata)
+        .mem_rdata(mem_rdata_timer)
     );
 
-
+	
+    // Wire-OR'ed bus for mem_ready amd mem_data from peripherals.	
+	 wire mem_ready_uart;
+	 wire mem_ready_gpio;
+	 wire mem_ready_prng;
+	 wire mem_ready_timer;
+	 wire mem_ready_memory;
+	 wire [31:0] mem_rdata_uart;
+	 wire [31:0] mem_rdata_gpio;
+	 wire [31:0] mem_rdata_prng;
+	 wire [31:0] mem_rdata_timer;
+	 wire [31:0] mem_rdata_memory;
+	 
+    assign mem_ready = mem_ready_uart | mem_ready_gpio | mem_ready_prng | mem_ready_timer | mem_ready_memory; 
+    assign mem_rdata = mem_rdata_uart | mem_rdata_gpio | mem_rdata_prng | mem_rdata_timer | mem_rdata_memory; 
+	 
+	 
     defparam cpu.ENABLE_COUNTERS = 0;
     defparam cpu.ENABLE_COUNTERS64 = 0;
     defparam cpu.BARREL_SHIFTER = 0;
@@ -385,5 +401,5 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
 
     // Put some memory signals out
     assign RND_OUT = {mem_valid, mem_ready, mem_wstrb[0], mem_wstrb[1]};
-*/
+
 endmodule
