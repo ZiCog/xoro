@@ -26,7 +26,7 @@ module gpio (
     reg [7:0] q;
     reg rdy;
 
-    always @(negedge clk) begin
+    always @(posedge clk) begin
         if (!resetn) begin
             rdy <= 0;
             q <= 0;
@@ -47,8 +47,8 @@ module gpio (
         q <= gpio;
     end
 
-    // Tri-state the bus outputs.
-    assign mem_rdata = enable ? q : 'bz;
-    assign mem_ready = enable ? rdy : 1'bz;
+    // Bus is wire-OR'ed, be sure to zero it if not in use
+    assign mem_rdata = enable ? q : 1'b0;
+    assign mem_ready = enable ? rdy : 1'b0;
 
 endmodule

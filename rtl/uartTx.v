@@ -9,7 +9,8 @@
 `include "inc/timescale.vh"
 
 module uartTx  #(
-    parameter [31:0] BAUD_DIVIDER = 868   // 100MHz / 115200 baud
+//    parameter [31:0] BAUD_DIVIDER = 868   // 100MHz / 115200 baud
+    parameter [31:0] BAUD_DIVIDER = 434   // 50MHz / 115200 baud
 ) (
     // Bus interface
     input  wire        clk,
@@ -49,7 +50,7 @@ module uartTx  #(
         end else begin
             if (mem_valid & enable) begin
                 if  ((mem_wstrb[0] == 1) && (bufferEmpty == 1)) begin
-                    buffer <= mem_wdata;
+                    buffer <= mem_wdata[7:0];
                     bufferEmpty <= 0;
                 end
                 rdy <= 1;
@@ -58,7 +59,7 @@ module uartTx  #(
             end
 
             // Generate bit clock timer for 115200 baud from 50MHz clock
-            bitTimer <= bitTimer + 1;
+            bitTimer <= bitTimer + 20'd1;
             if (bitTimer == BAUD_DIVIDER) begin
                 bitTimer <= 0;
             end
@@ -83,7 +84,7 @@ module uartTx  #(
                         if (bitCount > 0) begin
                             // Data bits
                             serialOut <= shifter[0];
-                            bitCount <= bitCount - 1;
+                            bitCount <= bitCount - 4'd1;
                             shifter <= shifter >> 1;
                         end else begin
                             // Stop bit
@@ -105,7 +106,7 @@ module uartTx  #(
     end
 
     // Tri-state the bus outputs.
-    assign mem_rdata = enable ? bufferEmpty : 'bz;
-    assign mem_ready = enable ? rdy : 'bz;
+    assign mem_rdata = enable ? bufferEmpty : 1'b0;
+    assign mem_ready = enable ? rdy : 1'b0;
 
 endmodule
