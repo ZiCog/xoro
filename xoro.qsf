@@ -460,4 +460,5 @@ set_global_assignment -name CDF_FILE output_files/Chain1.cdf
 set_global_assignment -name CDF_FILE output_files/Chain3.cdf
 set_global_assignment -name SDC_FILE de0_nano_system.sdc
 set_global_assignment -name QIP_FILE qram32.qip
+set_global_assignment -name VERILOG_FILE rtl/busInterface.v
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
