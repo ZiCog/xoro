@@ -426,6 +426,24 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_D[30]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_D[31]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_D[32]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_D[33]
+set_global_assignment -name VERILOG_INPUT_VERSION SYSTEMVERILOG_2005
+set_global_assignment -name VERILOG_SHOW_LMF_MAPPING_MESSAGES OFF
+
+
+
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_D[7]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_D[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_D[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_D[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_D[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_D
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to RND_OUT[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to RND_OUT[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to RND_OUT[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to RND_OUT[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to RND_OUT
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to UART_TX
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to reset_btn
 set_global_assignment -name VERILOG_INCLUDE_FILE inc/timescale.vh
 set_global_assignment -name VERILOG_FILE pll_sys.v
 set_global_assignment -name VERILOG_FILE rtl/timer.v
@@ -441,10 +459,5 @@ set_global_assignment -name CDF_FILE output_files/Chain2.cdf
 set_global_assignment -name CDF_FILE output_files/Chain1.cdf
 set_global_assignment -name CDF_FILE output_files/Chain3.cdf
 set_global_assignment -name SDC_FILE de0_nano_system.sdc
-set_global_assignment -name VERILOG_INPUT_VERSION SYSTEMVERILOG_2005
-set_global_assignment -name VERILOG_SHOW_LMF_MAPPING_MESSAGES OFF
 set_global_assignment -name QIP_FILE qram32.qip
-
-
-
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
