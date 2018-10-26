@@ -199,7 +199,7 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
         .c2 (CLOCK_10),          // 10MHz clock
         .locked (CLOCK_LOCKED)   // PLL is locked signal
     );
-    assign CLOCK = CLOCK_50;     // FIXME: Want to run at 100MHz
+    assign CLOCK = CLOCK_100;
 `else
     assign CLOCK = CLOCK_50;
 `endif
