@@ -14,6 +14,9 @@
 // irq.c
 uint32_t *irq(uint32_t *regs, uint32_t irqs);
 
+// timer.c
+int32_t timer(void);
+
 // prng.c
 uint32_t prng(void);
 

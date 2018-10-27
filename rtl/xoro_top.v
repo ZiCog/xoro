@@ -183,7 +183,7 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
    wire        CLOCK_LOCKED;
 
    
-   always @(posedge CLOCK_100)
+   always @(posedge CLOCK)
      begin
         resetCount <= resetCount + 8'd1;
         if (resetCount == 100) resetn <= 1;
