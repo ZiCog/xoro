@@ -18,10 +18,10 @@ module prng (
 	     output wire [31:0] mem_rdata
 	     );
 
-   wire [63:0] 			prng_out;
+   wire [63:0] 	prng_out;
    reg 				prng_clk;
    reg 				rdy;
-   reg 				q;
+   reg  [31:0]		q;
 
    xoroshiro128plus prng(
 			 .resn(resetn),

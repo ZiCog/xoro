@@ -14,6 +14,12 @@
 // irq.c
 uint32_t *irq(uint32_t *regs, uint32_t irqs);
 
+// prng.c
+uint32_t prng(void);
+
+// leds.c
+void ledsOut(char ch);
+
 // print.c
 void print_chr(char ch);
 void print_str(const char *p);
