@@ -132,7 +132,11 @@ endmodule
 
 
 
-module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] RND_OUT, output UART_TX, output GPIO_1_D[33:0]
+module xoro_top (input CLOCK_50,
+                 input reset_btn,
+					  output[7:0] LED,
+					  output UART_TX,
+					  output GPIO_1_D[33:0]
 		 );
 
    wire        trap;
@@ -178,8 +182,8 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
 
    wire        CLOCK;
    wire        CLOCK_100;
-   wire        CLOCK_100_SHIFTED;
-   wire        CLOCK_10;
+   wire        CLOCK_80;
+   wire        CLOCK_BAUD_18432000;
    wire        CLOCK_LOCKED;
 
    
@@ -195,16 +199,17 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
    pll_sys pll_sys_inst (
 			 .inclk0 (CLOCK_50),      // The input clok
 			 .c0 (CLOCK_100),         // 100MHz clock
-			 .c1 (CLOCK_100_SHIFTED), // 100MHz clock with phase shift of -54 degrees
-			 .c2 (CLOCK_10),          // 10MHz clock
+			 .c1 (CLOCK_80),          // 80MHz clock, like Parallax P2 on DEO Nano
+			 .c2 (CLOCK_1843200),     // 16 times 115200 baud.
 			 .locked (CLOCK_LOCKED)   // PLL is locked signal
 			 );
-   assign CLOCK = CLOCK_100;
+   assign CLOCK = CLOCK_80;
 `else
    assign CLOCK = CLOCK_50;
 `endif
 
    assign GPIO_1_D[33] = CLOCK;
+   assign GPIO_1_D[31] = mem_instr;
 
 
 
@@ -368,7 +373,7 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
    
    defparam cpu.ENABLE_COUNTERS = 0;
    defparam cpu.ENABLE_COUNTERS64 = 0;
-   defparam cpu.BARREL_SHIFTER = 0;
+   defparam cpu.BARREL_SHIFTER = 1;
    defparam cpu.TWO_CYCLE_COMPARE = 0;
    defparam cpu.TWO_CYCLE_ALU = 0;
    defparam cpu.ENABLE_PCPI = 0;        //
@@ -415,7 +420,5 @@ module xoro_top (input CLOCK_50, input reset_btn, output[7:0] LED, output[3:0] R
 		 .trace_data(trace_data)
 		 );
 
-   // Put some memory signals out
-   assign RND_OUT = {mem_valid, mem_ready, mem_wstrb[0], mem_wstrb[1]};
 
 endmodule

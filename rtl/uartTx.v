@@ -9,7 +9,8 @@
 `include "inc/timescale.vh"
 
 module uartTx  #(
-		 parameter [31:0] BAUD_DIVIDER = 868   // 115200 baud from 100MHz clock
+		 // parameter [31:0] BAUD_DIVIDER = 868   // 115200 baud from 100MHz clock
+		 parameter [31:0] BAUD_DIVIDER = 694   // 115200 baud from 100MHz clock
 		 //    parameter [31:0] BAUD_DIVIDER = 434   // 115200 baud from 50MHz clock
 		 ) (
 		    // Bus interface
@@ -23,7 +24,7 @@ module uartTx  #(
 		    input wire [31:0]  mem_wdata,
 		    input wire [31:0]  mem_addr,
 		    output wire [31:0] mem_rdata,
-
+			 
 		    // Serial interface
 		    output reg 	       serialOut     // The serial outout.
 		    );
