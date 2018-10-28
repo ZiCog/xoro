@@ -115,11 +115,11 @@ void fft_bench(void) {
     // HACK, when playing on a single CPU ensure we have some threads like 4 core
 //    omp_set_num_threads(2);
 
+    // Start benchmark timer
+    startTime = time_us();
 
     // Radix-2 Decimation In Time, the bit-reversal step.
     decimate();
-    // Start benchmark timer
-    startTime = time_us();
 
     //  Our FFT array will be split into slices. each slice can be handled by it's own thread
     //  slices = 1;
