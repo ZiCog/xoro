@@ -16,6 +16,7 @@ uint32_t *irq(uint32_t *regs, uint32_t irqs);
 
 // timer.c
 int32_t timer(void);
+long long time_us(void);
 
 // prng.c
 uint32_t prng(void);
@@ -41,6 +42,9 @@ void multest(void);
 
 // stats.c
 void stats(void);
+
+// fftbench.c
+void fft_bench(void);
 
 // helloWorld.c
 void helloWorld(void);

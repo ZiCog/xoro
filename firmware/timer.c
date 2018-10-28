@@ -15,3 +15,8 @@ int32_t timer(void)
 {
     return *((volatile uint32_t*)TIMER_PORT);
 }
+
+long long time_us(void)
+{
+    return *((volatile uint32_t*)TIMER_PORT) / 50;
+}

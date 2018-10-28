@@ -11,7 +11,7 @@ void helloWorld (void)
 
     while (1)
     {
-        print_str("Hello world!   ");
+        print_str("Hello world!\r\n");
 
         time = timer();
         print_hex(time, 8);
@@ -26,6 +26,9 @@ void helloWorld (void)
         print_str("\r\n");
 
         ledsOut(random);
+
+        fft_bench();
+        print_str("\r\n");
 
         count++;
     }
