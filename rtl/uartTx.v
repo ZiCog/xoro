@@ -9,8 +9,8 @@
 `include "inc/timescale.vh"
 
 module uartTx  #(
-		 // parameter [31:0] BAUD_DIVIDER = 868   // 115200 baud from 100MHz clock
-		 parameter [31:0] BAUD_DIVIDER = 694   // 115200 baud from 100MHz clock
+		 parameter [31:0] BAUD_DIVIDER = 868   // 115200 baud from 100MHz clock
+		 // parameter [31:0] BAUD_DIVIDER = 694   // 115200 baud from 100MHz clock
 		 //    parameter [31:0] BAUD_DIVIDER = 434   // 115200 baud from 50MHz clock
 		 ) (
 		    // Bus interface

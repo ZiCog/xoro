@@ -203,7 +203,7 @@ module xoro_top (input CLOCK_50,
 			 .c2 (CLOCK_1843200),     // 16 times 115200 baud.
 			 .locked (CLOCK_LOCKED)   // PLL is locked signal
 			 );
-   assign CLOCK = CLOCK_80;
+   assign CLOCK = CLOCK_100;
 `else
    assign CLOCK = CLOCK_50;
 `endif

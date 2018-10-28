@@ -759,7 +759,7 @@ CONTENT BEGIN          -- start of (address : data pairs)
 02ee : 00008067;
 02ef : ffff07b7;
 02f0 : 0307a503;
-02f1 : 05000793;
+02f1 : 06400793;
 02f2 : 00000593;
 02f3 : 02f55533;
 02f4 : 00008067;
