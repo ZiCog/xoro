@@ -27,6 +27,46 @@ module EdgeDetect (
 endmodule
 
 
+module BaudRateGenerator (
+		input  wire clk,
+		input  wire resetn,
+		input  wire baudClock,
+		output wire bitStart,
+		output wire probe
+	);
+
+	wire baudClockEdge;
+   reg [3:0] baudClockcount;
+	
+	EdgeDetect  baudClockEdgeDetect(
+		.clk(clk),
+		.resetn(resetn),
+		.io_in(baudClock),
+		.io_q(baudClockEdge)
+	);			 
+
+	EdgeDetect  bitClockEdgeDetect(
+		.clk(clk),
+		.resetn(resetn),
+		.io_in(baudRateClock),
+		.io_q(bitStart)
+	);			 
+	
+	assign baudRateClock = baudClockcount[3];
+	assign probe = baudRateClock;
+	
+	always @ (posedge clk or negedge resetn) begin
+		if (!resetn) begin
+			baudClockcount <= 7;
+		end else begin
+			if (baudClockEdge) begin
+			  baudClockcount <= baudClockcount - 1;
+			end
+		end
+	end
+endmodule
+
+
 module uartTx  (
 	// Bus interface
 	input wire 	       clk,
@@ -54,30 +94,18 @@ module uartTx  (
    reg [3:0] 			       bitCount;
    reg 				       bufferEmpty;          // TRUE when ready to accept next character.
    reg 				       rdy;
-   reg [3:0]				    baudClockcount;
-	wire                     baudClockEdge;
 	
 	wire                    baudRateClock;
+
+	BaudRateGenerator baudRateGenerator(
+		.clk(clk),
+		.resetn(resetn),
+		.baudClock(baudClock),
+		.bitStart(bitStart),
+		.probe(probe)
+	);			 
+
 	
-	wire                    bitStart;
-			 
-			 
-	EdgeDetect  baudClockEdgeDetect(
-		.clk(clk),
-		.resetn(resetn),
-		.io_in(baudClock),
-		.io_q(baudClockEdge)
-	);			 
-			 
-
-	EdgeDetect  bitClockEdgeDetect(
-		.clk(clk),
-		.resetn(resetn),
-		.io_in(baudRateClock),
-		.io_q(bitStart)
-	);			 
-
-			 	
    // UART TX Logic
    always @ (posedge clk or negedge resetn) begin
       if (!resetn) begin
@@ -88,7 +116,6 @@ module uartTx  (
          serialOut      <= 1;
          bitCount       <= 0;
          rdy            <= 0;
-         baudClockcount <= 7;
       end else begin
          if (mem_valid & enable) begin
             if  ((mem_wstrb[0] == 1) && (bufferEmpty == 1)) begin
@@ -100,12 +127,6 @@ module uartTx  (
             rdy <= 0;
          end
 
-		   
-         if (baudClockEdge) begin
-           baudClockcount <= baudClockcount - 1;
-			end
-
-			
          if (bitStart) begin
             case (state)
               // Idle
@@ -150,6 +171,4 @@ module uartTx  (
    // Wire-OR'ed bus outputs.
    assign mem_rdata = enable ? bufferEmpty : 1'b0;
    assign mem_ready = enable ? rdy : 1'b0;
-	assign baudRateClock = baudClockcount[3];
-	assign probe = baudRateClock;
 endmodule
