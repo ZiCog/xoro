@@ -208,7 +208,8 @@ module xoro_top (input CLOCK_50,
    assign CLOCK = CLOCK_50;
 `endif
 
-   assign GPIO_1_D[33] = CLOCK;
+   wire probe;
+   assign GPIO_1_D[33] = probe;
    assign GPIO_1_D[31] = mem_instr;
 
 
@@ -244,6 +245,10 @@ module xoro_top (input CLOCK_50,
 		  .mem_wdata(mem_wdata),
 		  .mem_rdata(mem_rdata_uart),
 
+		  
+		  .baudClock(CLOCK_1843200),
+		  .probe(probe),
+		  
 		  .serialOut(UART_TX)
 		  );
    

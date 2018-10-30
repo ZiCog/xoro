@@ -8,46 +8,87 @@
 //
 `include "inc/timescale.vh"
 
-module uartTx  #(
-		 parameter [31:0] BAUD_DIVIDER = 868   // 115200 baud from 100MHz clock
-		 // parameter [31:0] BAUD_DIVIDER = 694   // 115200 baud from 100MHz clock
-		 //    parameter [31:0] BAUD_DIVIDER = 434   // 115200 baud from 50MHz clock
-		 ) (
-		    // Bus interface
-		    input wire 	       clk,
-		    input wire 	       resetn,
-		    input wire 	       enable,
-		    input wire 	       mem_valid,
-		    output wire        mem_ready,
-		    input wire 	       mem_instr,
-		    input wire [3:0]   mem_wstrb,
-		    input wire [31:0]  mem_wdata,
-		    input wire [31:0]  mem_addr,
-		    output wire [31:0] mem_rdata,
+
+module EdgeDetect (
+      input   io_in,
+      output  io_q,
+      input   clk,
+      input   resetn);
+  reg  old_in;
+  assign io_q = (io_in && (! old_in));
+  always @ (posedge clk or negedge resetn) begin
+    if (!resetn) begin
+      old_in <= 1'b0;
+    end else begin
+      old_in <= io_in;
+    end
+  end
+
+endmodule
+
+
+module uartTx  (
+	// Bus interface
+	input wire 	       clk,
+	input wire 	       resetn,
+	input wire 	       enable,
+	input wire 	       mem_valid,
+	output wire        mem_ready,
+	input wire 	       mem_instr,
+	input wire [3:0]   mem_wstrb,
+	input wire [31:0]  mem_wdata,
+	input wire [31:0]  mem_addr,
+	output wire [31:0] mem_rdata,
+
+	input wire         baudClock,
+	output wire        probe,
+
+	// Serial interface
+	output reg 	       serialOut     // The serial outout.
+);
 			 
-		    // Serial interface
-		    output reg 	       serialOut     // The serial outout.
-		    );
    // Internal Variables
    reg [7:0] 			       shifter;
    reg [7:0] 			       buffer;
    reg [7:0] 			       state;
    reg [3:0] 			       bitCount;
-   reg [19:0] 			       bitTimer;
    reg 				       bufferEmpty;          // TRUE when ready to accept next character.
    reg 				       rdy;
+   reg [3:0]				    baudClockcount;
+	wire                     baudClockEdge;
+	
+	wire                    baudRateClock;
+	
+	wire                    bitStart;
+			 
+			 
+	EdgeDetect  baudClockEdgeDetect(
+		.clk(clk),
+		.resetn(resetn),
+		.io_in(baudClock),
+		.io_q(baudClockEdge)
+	);			 
+			 
 
+	EdgeDetect  bitClockEdgeDetect(
+		.clk(clk),
+		.resetn(resetn),
+		.io_in(baudRateClock),
+		.io_q(bitStart)
+	);			 
+
+			 	
    // UART TX Logic
    always @ (posedge clk or negedge resetn) begin
       if (!resetn) begin
-         state       <= 0;
-         buffer      <= 0;
-         bufferEmpty <= 1;
-         shifter     <= 0;
-         serialOut   <= 1;
-         bitCount    <= 0;
-         bitTimer    <= 0;
-         rdy         <= 0;
+         state          <= 0;
+         buffer         <= 0;
+         bufferEmpty    <= 1;
+         shifter        <= 0;
+         serialOut      <= 1;
+         bitCount       <= 0;
+         rdy            <= 0;
+         baudClockcount <= 7;
       end else begin
          if (mem_valid & enable) begin
             if  ((mem_wstrb[0] == 1) && (bufferEmpty == 1)) begin
@@ -59,13 +100,13 @@ module uartTx  #(
             rdy <= 0;
          end
 
-         // Generate bit clock timer for 115200 baud from 50MHz clock
-         bitTimer <= bitTimer + 20'd1;
-         if (bitTimer == BAUD_DIVIDER) begin
-            bitTimer <= 0;
-         end
+		   
+         if (baudClockEdge) begin
+           baudClockcount <= baudClockcount - 1;
+			end
 
-         if (bitTimer == 0) begin
+			
+         if (bitStart) begin
             case (state)
               // Idle
               0 : begin
@@ -109,5 +150,6 @@ module uartTx  #(
    // Wire-OR'ed bus outputs.
    assign mem_rdata = enable ? bufferEmpty : 1'b0;
    assign mem_ready = enable ? rdy : 1'b0;
-
+	assign baudRateClock = baudClockcount[3];
+	assign probe = baudRateClock;
 endmodule
