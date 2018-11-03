@@ -136,6 +136,7 @@ module xoro_top (input CLOCK_50,
                  input reset_btn,
 					  output[7:0] LED,
 					  output UART_TX,
+					  input UART_RX,
 					  output GPIO_1_D[33:0]
 		 );
 
@@ -252,7 +253,20 @@ module xoro_top (input CLOCK_50,
 		  .serialOut(UART_TX)
 		  );
    
-   wire testTick;
+	AsyncReceiver uartRx (
+      .clk(CLOCK),
+		.reset(!resetn),
+
+	   .io_enable(enables[2]),
+      .io_mem_valid(mem_valid),
+      .io_mem_ready(mem_ready_uartRx),
+      .io_mem_addr(mem_addr),
+      .io_mem_rdata(mem_rdata_uartRx),
+      .io_baudClockX16(CLOCK_1843200),
+      .io_rx(UART_RX)
+   );
+	
+	wire testTick;
    wire uartTestTick;
    wire gpioTestTick;
 
@@ -341,11 +355,13 @@ module xoro_top (input CLOCK_50,
 
    
    // Peripheral's mem_ready amd mem_data.  
+   wire mem_ready_uartRx;
    wire mem_ready_uart;
    wire mem_ready_gpio;
    wire mem_ready_prng;
    wire mem_ready_timer;
    wire mem_ready_memory;
+   wire [31:0] mem_rdata_uartRx;
    wire [31:0] mem_rdata_uart;
    wire [31:0] mem_rdata_gpio;
    wire [31:0] mem_rdata_prng;
@@ -360,12 +376,14 @@ module xoro_top (input CLOCK_50,
 
 			      .mem_rdata_gpio(mem_rdata_gpio),
 			      .mem_rdata_uart(mem_rdata_uart),
+			      .mem_rdata_uartRx(mem_rdata_uartRx),
 			      .mem_rdata_timer(mem_rdata_timer),
 			      .mem_rdata_prng(mem_rdata_prng),
 			      .mem_rdata_memory(mem_rdata_memory),
 
 			      .mem_ready_gpio(mem_ready_gpio),
 			      .mem_ready_uart(mem_ready_uart),
+			      .mem_ready_uartRx(mem_ready_uartRx),
 			      .mem_ready_timer(mem_ready_timer),
 			      .mem_ready_prng(mem_ready_prng),
 			      .mem_ready_memory(mem_ready_memory),

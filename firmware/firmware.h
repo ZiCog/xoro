@@ -30,6 +30,9 @@ void print_str(const char *p);
 void print_dec(unsigned int val);
 void print_hex(unsigned int val, int digits);
 
+// inch.c
+char inch(void);
+
 // sieve.c
 void sieve(void);
 

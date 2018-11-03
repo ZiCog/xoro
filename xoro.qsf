@@ -189,8 +189,6 @@ set_location_assignment PIN_D3 -to GPIO_0_D[0]
 set_location_assignment PIN_B8 -to GPIO_0_IN[1]
 set_location_assignment PIN_C3 -to GPIO_0_D[1]
 set_location_assignment PIN_A2 -to GPIO_0_D[2]
-set_location_assignment PIN_B3 -to GPIO_0_D[4]
-set_location_assignment PIN_B4 -to GPIO_0_D[5]
 set_location_assignment PIN_A4 -to GPIO_0_D[6]
 set_location_assignment PIN_B5 -to GPIO_0_D[7]
 set_location_assignment PIN_A5 -to GPIO_0_D[8]
@@ -444,6 +442,7 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to RND_OUT[0]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to RND_OUT
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to UART_TX
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to reset_btn
+set_location_assignment PIN_B4 -to UART_RX
 set_global_assignment -name VERILOG_INCLUDE_FILE inc/timescale.vh
 set_global_assignment -name VERILOG_FILE pll_sys.v
 set_global_assignment -name VERILOG_FILE rtl/timer.v
@@ -454,11 +453,11 @@ set_global_assignment -name VERILOG_FILE rtl/xoro_top.v
 set_global_assignment -name VERILOG_FILE rtl/picorv32.v
 set_global_assignment -name VERILOG_FILE rtl/memory.v
 set_global_assignment -name VERILOG_FILE rtl/gpio.v
-set_global_assignment -name VERILOG_FILE rtl/address_decoder.v
 set_global_assignment -name CDF_FILE output_files/Chain2.cdf
 set_global_assignment -name CDF_FILE output_files/Chain1.cdf
 set_global_assignment -name CDF_FILE output_files/Chain3.cdf
 set_global_assignment -name SDC_FILE de0_nano_system.sdc
 set_global_assignment -name QIP_FILE qram32.qip
 set_global_assignment -name VERILOG_FILE rtl/busInterface.v
+set_global_assignment -name VERILOG_FILE rtl/AsyncReceiver.v
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

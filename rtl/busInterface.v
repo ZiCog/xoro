@@ -4,12 +4,14 @@ module busInterface (
 
 		     input wire [31:0] 	mem_rdata_gpio,
 		     input wire [31:0] 	mem_rdata_uart,
+		     input wire [31:0] 	mem_rdata_uartRx,
 		     input wire [31:0] 	mem_rdata_timer,
 		     input wire [31:0] 	mem_rdata_prng,
 		     input wire [31:0] 	mem_rdata_memory,
 
 		     input wire 	mem_ready_gpio,
 		     input wire 	mem_ready_uart,
+		     input wire 	mem_ready_uartRx,
 		     input wire 	mem_ready_timer,
 		     input wire 	mem_ready_prng,
 		     input wire 	mem_ready_memory,
@@ -34,7 +36,7 @@ module busInterface (
       case (mem_addr[31:4])
         28'hffff000: mem_ready = mem_ready_memory;
         28'hffff001: mem_ready = mem_ready_memory;
-        28'hffff002: mem_ready = mem_ready_memory;
+        28'hffff002: mem_ready = mem_ready_uartRx;
         28'hffff003: mem_ready = mem_ready_timer;
         28'hffff004: mem_ready = mem_ready_uart;
         28'hffff005: mem_ready = mem_ready_prng;
@@ -44,7 +46,7 @@ module busInterface (
       case (mem_addr[31:4])
         28'hffff000: mem_rdata = mem_rdata_memory;
         28'hffff001: mem_rdata = mem_rdata_memory;
-        28'hffff002: mem_rdata = mem_rdata_memory;
+        28'hffff002: mem_rdata = mem_rdata_uartRx;
         28'hffff003: mem_rdata = mem_rdata_timer;
         28'hffff004: mem_rdata = mem_rdata_uart;
         28'hffff005: mem_rdata = mem_rdata_prng;

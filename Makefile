@@ -1,6 +1,6 @@
 RISCV_GNU_TOOLCHAIN_INSTALL_PREFIX = /opt/riscv32
 
-FIRMWARE_OBJS = firmware/start.o firmware/irq.o firmware/print.o firmware/timer.o firmware/prng.o firmware/leds.o firmware/fftbench.o firmware/helloWorld.o 
+FIRMWARE_OBJS = firmware/start.o firmware/irq.o firmware/print.o firmware/inch.o firmware/timer.o firmware/prng.o firmware/leds.o firmware/fftbench.o firmware/helloWorld.o 
 GCC_WARNS  =  -Wall -Wextra -Wshadow -Wundef -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings
 GCC_WARNS += -Wredundant-decls -Wstrict-prototypes -Wmissing-prototypes -pedantic # -Wconversion
 TOOLCHAIN_PREFIX = $(RISCV_GNU_TOOLCHAIN_INSTALL_PREFIX)im/bin/riscv32-unknown-elf-

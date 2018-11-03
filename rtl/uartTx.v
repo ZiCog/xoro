@@ -172,3 +172,5 @@ module uartTx  (
    assign mem_rdata = enable ? bufferEmpty : 1'b0;
    assign mem_ready = enable ? rdy : 1'b0;
 endmodule
+
+

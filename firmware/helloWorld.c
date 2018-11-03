@@ -8,10 +8,22 @@ void helloWorld (void)
     uint32_t random;
     int32_t time;
     int32_t timeLast = 0;
+    char c;
 
     while (1)
     {
-        print_str("Hello world!\r\n");
+        print_str("\r\nHello world!\r\n");
+
+        while (1) {
+            c = inch();
+            print_chr(c);
+            if ((c == '\r') || (c == '\n')) {
+                break;
+            } 
+            ledsOut(c);
+        }
+        
+        print_str("\r\n");
 
         time = timer();
         print_hex(time, 8);
@@ -31,5 +43,6 @@ void helloWorld (void)
         print_str("\r\n");
 
         count++;
+
     }
 }
