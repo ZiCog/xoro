@@ -26,7 +26,7 @@ module AsyncReceiver (
       output reg  io_mem_ready,
       input  [3:0] io_mem_addr,
       output reg [31:0] io_mem_rdata,
-      input   io_baudClockX16,
+      input   io_baudClockX64,
       input   io_rx,
       input   clk,
       input   reset);
@@ -34,7 +34,7 @@ module AsyncReceiver (
   wire  _zz_2;
   wire [0:0] _zz_3;
   reg [1:0] state;
-  reg [4:0] bitTimeOut;
+  reg [5:0] bitTimer;
   reg [2:0] bitCount;
   reg [7:0] shifter;
   reg [7:0] buffer_1;
@@ -42,8 +42,8 @@ module AsyncReceiver (
   wire  baudClockEdge;
   assign _zz_2 = (io_mem_valid && io_enable);
   assign _zz_3 = bufferFull;
-  EdgeDetect_ baudClockX16Edge ( 
-    .io_trigger(io_baudClockX16),
+  EdgeDetect_ baudClockX64Edge ( 
+    .io_trigger(io_baudClockX64),
     .io_Q(_zz_1),
     .clk(clk),
     .reset(reset) 
@@ -70,54 +70,51 @@ module AsyncReceiver (
   always @ (posedge clk or posedge reset) begin
     if (reset) begin
       state <= (2'b00);
-      bitTimeOut <= (5'b00000);
+      bitTimer <= (6'b000000);
       bitCount <= (3'b000);
       shifter <= (8'b00000000);
       buffer_1 <= (8'b00000000);
       bufferFull <= 1'b0;
     end else begin
       if(baudClockEdge)begin
-        if((! (bitTimeOut == (5'b00000))))begin
-          bitTimeOut <= (bitTimeOut - (5'b00001));
-        end
-      end
-      case(state)
-        2'b00 : begin
-          if((io_rx == 1'b0))begin
-            state <= (2'b01);
-            bitTimeOut <= (5'b01000);
-          end
-        end
-        2'b01 : begin
-          if((bitTimeOut == (5'b00000)))begin
+        bitTimer <= (bitTimer - (6'b000001));
+        case(state)
+          2'b00 : begin
             if((io_rx == 1'b0))begin
-              bitTimeOut <= (5'b10000);
-              state <= (2'b10);
-            end else begin
+              state <= (2'b01);
+              bitTimer <= (6'b011111);
+            end
+          end
+          2'b01 : begin
+            if((bitTimer == (6'b000000)))begin
+              if((io_rx == 1'b0))begin
+                bitTimer <= (6'b111111);
+                state <= (2'b10);
+              end else begin
+                state <= (2'b00);
+              end
+            end
+          end
+          2'b10 : begin
+            if((bitTimer == (6'b000000)))begin
+              shifter[bitCount] <= io_rx;
+              bitCount <= (bitCount + (3'b001));
+              if((bitCount == (3'b111)))begin
+                state <= (2'b11);
+              end
+            end
+          end
+          default : begin
+            if((bitTimer == (6'b000000)))begin
+              if((io_rx == 1'b1))begin
+                buffer_1 <= shifter;
+                bufferFull <= 1'b1;
+              end
               state <= (2'b00);
             end
           end
-        end
-        2'b10 : begin
-          if((bitTimeOut == (5'b00000)))begin
-            shifter[bitCount] <= io_rx;
-            if((bitCount == (3'b111)))begin
-              state <= (2'b11);
-            end
-            bitCount <= (bitCount + (3'b001));
-            bitTimeOut <= (5'b10000);
-          end
-        end
-        default : begin
-          if((bitTimeOut == (5'b00000)))begin
-            if((io_rx == 1'b1))begin
-              buffer_1 <= shifter;
-              bufferFull <= 1'b1;
-            end
-            state <= (2'b00);
-          end
-        end
-      endcase
+        endcase
+      end
       if(_zz_2)begin
         case(io_mem_addr)
           4'b0000 : begin

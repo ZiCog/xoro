@@ -21,7 +21,7 @@ module busInterface (
 		     output wire [7:0] 	enables 
 
 		     );
-   always @(mem_addr) begin
+   always @(*) begin
       enables = 0;
       case (mem_addr[31:4])
         28'hffff000: enables[0] = 1'd1;

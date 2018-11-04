@@ -183,8 +183,8 @@ module xoro_top (input CLOCK_50,
 
    wire        CLOCK;
    wire        CLOCK_100;
-   wire        CLOCK_80;
-   wire        CLOCK_BAUD_18432000;
+   wire        CLOCK_7372800;         // 64 times 115200 baud.
+   wire        CLOCK_BAUD_18432000;   // 16 times 115200 baud.
    wire        CLOCK_LOCKED;
 
    
@@ -200,7 +200,7 @@ module xoro_top (input CLOCK_50,
    pll_sys pll_sys_inst (
 			 .inclk0 (CLOCK_50),      // The input clok
 			 .c0 (CLOCK_100),         // 100MHz clock
-			 .c1 (CLOCK_80),          // 80MHz clock, like Parallax P2 on DEO Nano
+			 .c1 (CLOCK_7372800),     // 64 times 115200 baud.
 			 .c2 (CLOCK_1843200),     // 16 times 115200 baud.
 			 .locked (CLOCK_LOCKED)   // PLL is locked signal
 			 );
@@ -211,7 +211,7 @@ module xoro_top (input CLOCK_50,
 
    wire probe;
    assign GPIO_1_D[33] = probe;
-   assign GPIO_1_D[31] = mem_instr;
+   assign GPIO_1_D[31] = UART_RX;
 
 
 
@@ -262,7 +262,7 @@ module xoro_top (input CLOCK_50,
       .io_mem_ready(mem_ready_uartRx),
       .io_mem_addr(mem_addr),
       .io_mem_rdata(mem_rdata_uartRx),
-      .io_baudClockX16(CLOCK_1843200),
+      .io_baudClockX64(CLOCK_7372800),
       .io_rx(UART_RX)
    );
 	
