@@ -1,5 +1,5 @@
 // Generator : SpinalHDL v1.1.5    git head : 0310b2489a097f2b9de5535e02192d9ddd2764ae
-// Date      : 09/11/2018, 00:30:38
+// Date      : 09/11/2018, 01:09:35
 // Component : AsyncReceiver
 
 
@@ -111,16 +111,19 @@ module AsyncReceiver (
   wire  _zz_6;
   wire  _zz_7;
   wire  _zz_8;
-  wire [0:0] _zz_9;
+  wire  _zz_9;
+  wire [0:0] _zz_10;
   reg [1:0] state;
   reg [5:0] bitTimer;
   reg [2:0] bitCount;
   reg [7:0] shifter;
   reg [7:0] buffer_1;
+  reg  bufferFull;
   wire  baudClockEdge;
   assign _zz_7 = (bitTimer == (6'b000000));
-  assign _zz_8 = (io_rx == 1'b1);
-  assign _zz_9 = (! _zz_6);
+  assign _zz_8 = (io_mem_valid && io_enable);
+  assign _zz_9 = (io_rx == 1'b1);
+  assign _zz_10 = bufferFull;
   EdgeDetect_ baudClockX64Edge ( 
     .io_trigger(io_baudClockX64),
     .io_Q(_zz_3),
@@ -150,7 +153,7 @@ module AsyncReceiver (
         end
         default : begin
           if(_zz_7)begin
-            if(_zz_8)begin
+            if(_zz_9)begin
               _zz_2 = 1'b1;
             end
           end
@@ -163,7 +166,7 @@ module AsyncReceiver (
     _zz_1 = 1'b0;
     io_mem_rdata = (32'b00000000000000000000000000000000);
     io_mem_ready = 1'b0;
-    if((io_mem_valid && io_enable))begin
+    if(_zz_8)begin
       io_mem_ready = 1'b1;
       case(io_mem_addr)
         4'b0000 : begin
@@ -171,7 +174,7 @@ module AsyncReceiver (
           _zz_1 = 1'b1;
         end
         4'b0100 : begin
-          io_mem_rdata = {31'd0, _zz_9};
+          io_mem_rdata = {31'd0, _zz_10};
         end
         default : begin
         end
@@ -186,6 +189,7 @@ module AsyncReceiver (
       bitCount <= (3'b000);
       shifter <= (8'b00000000);
       buffer_1 <= (8'b00000000);
+      bufferFull <= 1'b0;
     end else begin
       if(baudClockEdge)begin
         bitTimer <= (bitTimer - (6'b000001));
@@ -217,11 +221,23 @@ module AsyncReceiver (
           end
           default : begin
             if(_zz_7)begin
-              if(_zz_8)begin
+              if(_zz_9)begin
                 buffer_1 <= shifter;
+                bufferFull <= 1'b1;
               end
               state <= (2'b00);
             end
+          end
+        endcase
+      end
+      if(_zz_8)begin
+        case(io_mem_addr)
+          4'b0000 : begin
+          end
+          4'b0100 : begin
+            bufferFull <= 1'b0;
+          end
+          default : begin
           end
         endcase
       end
