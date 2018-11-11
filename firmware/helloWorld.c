@@ -1,6 +1,5 @@
 #include "firmware.h"
 
-unsigned char testBytes[] = {0xde, 0xad, 0xbe, 0xef};
 
 void helloWorld (void)
 {
@@ -8,7 +7,11 @@ void helloWorld (void)
     uint32_t random;
     int32_t time;
     int32_t timeLast = 0;
-    char c;
+    char c = 0;
+    char lastC = -1;
+    int errorCount = 0;
+    const char* message = "Now is the time for all good men to come to the aid of the party";
+    const char* msgPtr = message;
 
     while (1)
     {
@@ -16,11 +19,17 @@ void helloWorld (void)
 
         while (1) {
             c = inch();
-            print_chr(c);
-            if ((c == '\r') || (c == '\n')) {
-                break;
-            } 
-            ledsOut(c);
+	    if (c == 'N')
+	    {
+               msgPtr = message; 
+	    }
+            if (c != *msgPtr)
+	    {
+                errorCount++;
+            }
+	    msgPtr++;
+	    lastC = c;
+            ledsOut(errorCount);
         }
         
         print_str("\r\n");
