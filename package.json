@@ -1,0 +1,25 @@
+{
+  "name": "xoro",
+  "version": "1.0.0",
+  "description": "This is the picorv32 RISC-V processor in Verilog wrapped in some very simple memory and peripherals. Enough to get it working on a Terasic DE-0 Nano Cyclone IV FPGA board.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZiCog/xoro.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ZiCog/xoro/issues"
+  },
+  "homepage": "https://github.com/ZiCog/xoro#readme",
+  "dependencies": {
+    "serialport": "^7.0.2"
+  }
+}

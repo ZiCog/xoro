@@ -19,6 +19,7 @@ void helloWorld (void)
 
         while (1) {
             c = inch();
+            print_hex(c, 2);
 	    if (c == 'N')
 	    {
                msgPtr = message; 
