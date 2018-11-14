@@ -8,29 +8,34 @@ void helloWorld (void)
     int32_t time;
     int32_t timeLast = 0;
     char c = 0;
-    char lastC = -1;
     int errorCount = 0;
     const char* message = "Now is the time for all good men to come to the aid of the party";
     const char* msgPtr = message;
 
     while (1)
     {
-        print_str("\r\nHello world!\r\n");
+        print_str(message);
 
         while (1) {
             c = inch();
-            print_hex(c, 2);
-	    if (c == 'N')
+	    if (c == *msgPtr)
 	    {
-               msgPtr = message; 
-	    }
-            if (c != *msgPtr)
+		if (c == 0)
+		{
+		    msgPtr = message;
+                    print_str(message);
+		}
+		else
+		{
+	          msgPtr++;
+		}
+            }
+	    else
 	    {
                 errorCount++;
-            }
-	    msgPtr++;
-	    lastC = c;
-            ledsOut(errorCount);
+		msgPtr = message;
+                ledsOut(errorCount);
+	    }
         }
         
         print_str("\r\n");
