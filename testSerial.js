@@ -23,7 +23,7 @@ port.on('data', function (inBuff) {
 let sendMsgs = function () {
   port.write(message, 'binary', function () {
     txCount += message.length
-    setTimeout(sendMsgs, 14)
+    setTimeout(sendMsgs, 10)
   })
 }
 

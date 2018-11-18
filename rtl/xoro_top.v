@@ -229,7 +229,7 @@ module xoro_top (input CLOCK_50,
               .mem_wdata(mem_wdata),
               .mem_rdata(mem_rdata_gpio),
 
-              .gpio(LED)
+              //.gpio(LED)
 	      );
 
    uartTx uartTx (
@@ -263,7 +263,8 @@ module xoro_top (input CLOCK_50,
       .io_mem_addr(mem_addr),
       .io_mem_rdata(mem_rdata_uartRx),
       .io_baudClockX64(CLOCK_7372800),
-      .io_rx(UART_RX)
+      .io_rx(UART_RX),
+		.io_leds(LED)
    );
 	
 	wire testTick;

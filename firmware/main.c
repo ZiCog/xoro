@@ -15,6 +15,7 @@ void helloWorld (void)
     while (1)
     {
         print_str(message);
+        print_str("\r\n");
 
         while (1) {
             c = inch();
@@ -22,8 +23,10 @@ void helloWorld (void)
 	    {
 		if (c == 0)
 		{
+		    print_str("RX error count: ");
+		    print_hex(errorCount, 8);
+		    print_str("\r\n");
 		    msgPtr = message;
-                    print_str(message);
 		}
 		else
 		{
@@ -34,6 +37,9 @@ void helloWorld (void)
 	    {
                 errorCount++;
 		msgPtr = message;
+		print_str("RX error count: ");
+		print_hex(errorCount, 8);
+		print_str("\r\n");
                 ledsOut(errorCount);
 	    }
         }
