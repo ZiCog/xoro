@@ -1,5 +1,5 @@
 // Generator : SpinalHDL v1.1.5    git head : 0310b2489a097f2b9de5535e02192d9ddd2764ae
-// Date      : 18/11/2018, 16:11:21
+// Date      : 19/11/2018, 10:39:08
 // Component : AsyncReceiver
 
 
@@ -13,19 +13,22 @@ module Fifo (
       input   clk,
       input   reset);
   wire [7:0] _zz_1;
-  wire [7:0] _zz_2;
-  wire  _zz_3;
+  wire [4:0] _zz_2;
+  wire [4:0] _zz_3;
+  wire [7:0] _zz_4;
+  wire  _zz_5;
   reg [4:0] head;
   reg [4:0] tail;
-  reg [5:0] count;
   reg  full;
   reg  empty;
   reg [7:0] mem [0:31];
-  assign _zz_2 = io_dataIn;
-  assign _zz_3 = ((! full) && io_write);
+  assign _zz_2 = (head + (5'b00001));
+  assign _zz_3 = (tail + (5'b00001));
+  assign _zz_4 = io_dataIn;
+  assign _zz_5 = ((! full) && io_write);
   always @ (posedge clk) begin
-    if(_zz_3) begin
-      mem[head] <= _zz_2;
+    if(_zz_5) begin
+      mem[head] <= _zz_4;
     end
   end
 
@@ -37,35 +40,30 @@ module Fifo (
     if (reset) begin
       head <= (5'b00000);
       tail <= (5'b00000);
-      count <= (6'b000000);
       full <= 1'b0;
       empty <= 1'b1;
     end else begin
       if((io_write && (! io_read)))begin
-        if((count != (6'b100000)))begin
+        if((! full))begin
           head <= (head + (5'b00001));
-          count <= (count + (6'b000001));
-          full <= (count == (6'b011111));
+          full <= (_zz_2 == tail);
           empty <= 1'b0;
         end
       end
       if(((! io_write) && io_read))begin
-        if((count != (6'b000000)))begin
+        if((! empty))begin
           tail <= (tail + (5'b00001));
-          count <= (count - (6'b000001));
-          empty <= (count == (6'b000001));
+          empty <= (_zz_3 == head);
           full <= 1'b0;
         end
       end
       if((io_write && io_read))begin
         if(full)begin
           tail <= (tail + (5'b00001));
-          count <= (count - (6'b000001));
           full <= 1'b0;
         end
         if(empty)begin
           head <= (head + (5'b00001));
-          count <= (count + (6'b000001));
           empty <= 1'b0;
         end
         if(((! full) && (! empty)))begin
@@ -107,15 +105,14 @@ module AsyncReceiver (
   reg [7:0] leds;
   reg  baudClockX64Sync1;
   reg  baudClockX64Sync2;
-  reg [31:0] cunt;
   reg  _zz_1;
   reg [7:0] rdata;
   reg  ready;
   wire  busCycle;
   reg  _zz_2;
-  assign _zz_9 = (baudClockX64Sync2 && (! _zz_1));
+  assign _zz_9 = (bitTimer == (6'b000000));
   assign _zz_10 = (busCycle && (! _zz_2));
-  assign _zz_11 = (bitTimer == (6'b000000));
+  assign _zz_11 = (baudClockX64Sync2 && (! _zz_1));
   assign _zz_12 = {24'd0, rdata};
   assign _zz_13 = (! _zz_8);
   Fifo fifo_1 ( 
@@ -146,7 +143,7 @@ module AsyncReceiver (
   always @ (*) begin
     _zz_5 = 1'b0;
     _zz_3 = (8'b00000000);
-    if(_zz_9)begin
+    if(_zz_11)begin
       case(state)
         2'b00 : begin
         end
@@ -155,7 +152,7 @@ module AsyncReceiver (
         2'b10 : begin
         end
         default : begin
-          if(_zz_11)begin
+          if(_zz_9)begin
             if((io_rx == 1'b1))begin
               if((! _zz_7))begin
                 _zz_3 = shifter;
@@ -181,14 +178,12 @@ module AsyncReceiver (
       leds <= (8'b00000000);
       baudClockX64Sync1 <= 1'b0;
       baudClockX64Sync2 <= 1'b0;
-      cunt <= (32'b00000000000000000000000000000000);
       rdata <= (8'b00000000);
       ready <= 1'b0;
     end else begin
       baudClockX64Sync1 <= io_baudClockX64;
       baudClockX64Sync2 <= baudClockX64Sync1;
-      if(_zz_9)begin
-        cunt <= (cunt + (32'b00000000000000000000000000000001));
+      if(_zz_11)begin
         bitTimer <= (bitTimer - (6'b000001));
         case(state)
           2'b00 : begin
@@ -217,7 +212,7 @@ module AsyncReceiver (
             end
           end
           default : begin
-            if(_zz_11)begin
+            if(_zz_9)begin
               state <= (2'b00);
             end
           end
