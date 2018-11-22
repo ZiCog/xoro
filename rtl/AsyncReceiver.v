@@ -1,5 +1,5 @@
 // Generator : SpinalHDL v1.1.5    git head : 0310b2489a097f2b9de5535e02192d9ddd2764ae
-// Date      : 19/11/2018, 11:07:33
+// Date      : 22/11/2018, 06:39:13
 // Component : AsyncReceiver
 
 
@@ -95,7 +95,6 @@ module AsyncReceiver (
       output [31:0] io_mem_rdata,
       input   io_baudClockX64,
       input   io_rx,
-      output [7:0] io_leds,
       input   clk,
       input   reset);
   reg [7:0] _zz_3;
@@ -106,14 +105,13 @@ module AsyncReceiver (
   wire  _zz_8;
   wire  _zz_9;
   wire  _zz_10;
-  wire  _zz_11;
-  wire [31:0] _zz_12;
-  wire [0:0] _zz_13;
-  reg [1:0] state;
+  wire [31:0] _zz_11;
+  wire [0:0] _zz_12;
+  reg [2:0] state;
+  reg [2:0] next_1;
   reg [5:0] bitTimer;
   reg [2:0] bitCount;
   reg [7:0] shifter;
-  reg [7:0] leds;
   reg  baudClockX64Sync1;
   reg  baudClockX64Sync2;
   reg  _zz_1;
@@ -123,9 +121,8 @@ module AsyncReceiver (
   reg  _zz_2;
   assign _zz_9 = (baudClockX64Sync2 && (! _zz_1));
   assign _zz_10 = (busCycle && (! _zz_2));
-  assign _zz_11 = (bitTimer == (6'b000000));
-  assign _zz_12 = {24'd0, rdata};
-  assign _zz_13 = (! _zz_8);
+  assign _zz_11 = {24'd0, rdata};
+  assign _zz_12 = (! _zz_8);
   Fifo fifo_1 ( 
     .io_dataIn(_zz_3),
     .io_dataOut(_zz_6),
@@ -156,37 +153,36 @@ module AsyncReceiver (
     _zz_3 = (8'b00000000);
     if(_zz_9)begin
       case(state)
-        2'b00 : begin
+        3'b000 : begin
         end
-        2'b01 : begin
+        3'b001 : begin
         end
-        2'b10 : begin
+        3'b010 : begin
+        end
+        3'b011 : begin
+        end
+        3'b100 : begin
+          if((! _zz_7))begin
+            _zz_3 = shifter;
+            _zz_5 = 1'b1;
+          end
         end
         default : begin
-          if(_zz_11)begin
-            if((io_rx == 1'b1))begin
-              if((! _zz_7))begin
-                _zz_3 = shifter;
-                _zz_5 = 1'b1;
-              end
-            end
-          end
         end
       endcase
     end
   end
 
-  assign io_leds = leds;
   assign busCycle = (io_mem_valid && io_enable);
-  assign io_mem_rdata = (busCycle ? _zz_12 : (32'b00000000000000000000000000000000));
+  assign io_mem_rdata = (busCycle ? _zz_11 : (32'b00000000000000000000000000000000));
   assign io_mem_ready = (busCycle ? ready : 1'b0);
   always @ (posedge clk or posedge reset) begin
     if (reset) begin
-      state <= (2'b00);
+      state <= (3'b000);
+      next_1 <= (3'b000);
       bitTimer <= (6'b000000);
       bitCount <= (3'b000);
       shifter <= (8'b00000000);
-      leds <= (8'b00000000);
       baudClockX64Sync1 <= 1'b0;
       baudClockX64Sync2 <= 1'b0;
       rdata <= (8'b00000000);
@@ -194,42 +190,52 @@ module AsyncReceiver (
     end else begin
       baudClockX64Sync1 <= io_baudClockX64;
       baudClockX64Sync2 <= baudClockX64Sync1;
+      state <= next_1;
       if(_zz_9)begin
         bitTimer <= (bitTimer - (6'b000001));
         case(state)
-          2'b00 : begin
+          3'b000 : begin
             if((io_rx == 1'b0))begin
-              state <= (2'b01);
+              next_1 <= (3'b001);
               bitTimer <= (6'b011111);
             end
           end
-          2'b01 : begin
+          3'b001 : begin
             if((bitTimer == (6'b000000)))begin
               if((io_rx == 1'b0))begin
                 bitTimer <= (6'b111111);
-                state <= (2'b10);
+                next_1 <= (3'b010);
               end else begin
-                state <= (2'b00);
+                next_1 <= (3'b000);
               end
             end
           end
-          2'b10 : begin
+          3'b010 : begin
             if((bitTimer == (6'b000000)))begin
               shifter[bitCount] <= io_rx;
               bitCount <= (bitCount + (3'b001));
               if((bitCount == (3'b111)))begin
-                state <= (2'b11);
+                next_1 <= (3'b011);
               end
             end
           end
-          default : begin
-            if(_zz_11)begin
-              state <= (2'b00);
+          3'b011 : begin
+            if((bitTimer == (6'b000000)))begin
+              if((io_rx == 1'b1))begin
+                next_1 <= (3'b100);
+              end else begin
+                next_1 <= (3'b000);
+              end
             end
+          end
+          3'b100 : begin
+            next_1 <= (3'b000);
+          end
+          default : begin
+            next_1 <= (3'b000);
           end
         endcase
       end
-      leds <= {6'd0, state};
       ready <= busCycle;
       if(_zz_10)begin
         case(io_mem_addr)
@@ -237,7 +243,7 @@ module AsyncReceiver (
             rdata <= _zz_6;
           end
           4'b0100 : begin
-            rdata <= {7'd0, _zz_13};
+            rdata <= {7'd0, _zz_12};
           end
           default : begin
           end
