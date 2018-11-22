@@ -1,5 +1,5 @@
 // Generator : SpinalHDL v1.1.5    git head : 0310b2489a097f2b9de5535e02192d9ddd2764ae
-// Date      : 22/11/2018, 06:39:13
+// Date      : 22/11/2018, 11:10:51
 // Component : AsyncReceiver
 
 
@@ -97,16 +97,15 @@ module AsyncReceiver (
       input   io_rx,
       input   clk,
       input   reset);
-  reg [7:0] _zz_3;
+  reg  _zz_3;
   reg  _zz_4;
-  reg  _zz_5;
-  wire [7:0] _zz_6;
+  wire [7:0] _zz_5;
+  wire  _zz_6;
   wire  _zz_7;
   wire  _zz_8;
   wire  _zz_9;
-  wire  _zz_10;
-  wire [31:0] _zz_11;
-  wire [0:0] _zz_12;
+  wire [31:0] _zz_10;
+  wire [0:0] _zz_11;
   reg [2:0] state;
   reg [2:0] next_1;
   reg [5:0] bitTimer;
@@ -119,26 +118,26 @@ module AsyncReceiver (
   reg  ready;
   wire  busCycle;
   reg  _zz_2;
-  assign _zz_9 = (baudClockX64Sync2 && (! _zz_1));
-  assign _zz_10 = (busCycle && (! _zz_2));
-  assign _zz_11 = {24'd0, rdata};
-  assign _zz_12 = (! _zz_8);
+  assign _zz_8 = (baudClockX64Sync2 && (! _zz_1));
+  assign _zz_9 = (busCycle && (! _zz_2));
+  assign _zz_10 = {24'd0, rdata};
+  assign _zz_11 = (! _zz_7);
   Fifo fifo_1 ( 
-    .io_dataIn(_zz_3),
-    .io_dataOut(_zz_6),
-    .io_read(_zz_4),
-    .io_write(_zz_5),
-    .io_full(_zz_7),
-    .io_empty(_zz_8),
+    .io_dataIn(shifter),
+    .io_dataOut(_zz_5),
+    .io_read(_zz_3),
+    .io_write(_zz_4),
+    .io_full(_zz_6),
+    .io_empty(_zz_7),
     .clk(clk),
     .reset(reset) 
   );
   always @ (*) begin
-    _zz_4 = 1'b0;
-    if(_zz_10)begin
+    _zz_3 = 1'b0;
+    if(_zz_9)begin
       case(io_mem_addr)
         4'b0000 : begin
-          _zz_4 = 1'b1;
+          _zz_3 = 1'b1;
         end
         4'b0100 : begin
         end
@@ -149,9 +148,8 @@ module AsyncReceiver (
   end
 
   always @ (*) begin
-    _zz_5 = 1'b0;
-    _zz_3 = (8'b00000000);
-    if(_zz_9)begin
+    _zz_4 = 1'b0;
+    if(_zz_8)begin
       case(state)
         3'b000 : begin
         end
@@ -162,9 +160,8 @@ module AsyncReceiver (
         3'b011 : begin
         end
         3'b100 : begin
-          if((! _zz_7))begin
-            _zz_3 = shifter;
-            _zz_5 = 1'b1;
+          if((! _zz_6))begin
+            _zz_4 = 1'b1;
           end
         end
         default : begin
@@ -174,7 +171,7 @@ module AsyncReceiver (
   end
 
   assign busCycle = (io_mem_valid && io_enable);
-  assign io_mem_rdata = (busCycle ? _zz_11 : (32'b00000000000000000000000000000000));
+  assign io_mem_rdata = (busCycle ? _zz_10 : (32'b00000000000000000000000000000000));
   assign io_mem_ready = (busCycle ? ready : 1'b0);
   always @ (posedge clk or posedge reset) begin
     if (reset) begin
@@ -191,7 +188,7 @@ module AsyncReceiver (
       baudClockX64Sync1 <= io_baudClockX64;
       baudClockX64Sync2 <= baudClockX64Sync1;
       state <= next_1;
-      if(_zz_9)begin
+      if(_zz_8)begin
         bitTimer <= (bitTimer - (6'b000001));
         case(state)
           3'b000 : begin
@@ -237,13 +234,13 @@ module AsyncReceiver (
         endcase
       end
       ready <= busCycle;
-      if(_zz_10)begin
+      if(_zz_9)begin
         case(io_mem_addr)
           4'b0000 : begin
-            rdata <= _zz_6;
+            rdata <= _zz_5;
           end
           4'b0100 : begin
-            rdata <= {7'd0, _zz_12};
+            rdata <= {7'd0, _zz_11};
           end
           default : begin
           end
