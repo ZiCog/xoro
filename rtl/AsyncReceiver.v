@@ -1,5 +1,5 @@
 // Generator : SpinalHDL v1.1.5    git head : 0310b2489a097f2b9de5535e02192d9ddd2764ae
-// Date      : 01/12/2018, 09:11:40
+// Date      : 02/12/2018, 10:37:58
 // Component : AsyncReceiver
 
 
@@ -97,53 +97,49 @@ module AsyncReceiver (
       input   io_rx,
       input   clk,
       input   reset);
-  reg  _zz_8;
-  reg  _zz_9;
-  wire [7:0] _zz_10;
+  reg  _zz_5;
+  reg  _zz_6;
+  wire [7:0] _zz_7;
+  wire  _zz_8;
+  wire  _zz_9;
+  wire  _zz_10;
   wire  _zz_11;
-  wire  _zz_12;
-  wire  _zz_13;
-  wire  _zz_14;
-  wire [31:0] _zz_15;
-  wire [0:0] _zz_16;
-  reg [2:0] state;
-  wire [2:0] next_1;
+  wire [31:0] _zz_12;
+  wire [0:0] _zz_13;
+  reg [1:0] state;
   reg [5:0] bitTimer;
   reg [2:0] bitCount;
   reg [7:0] shifter;
   reg  baudClockX64Sync1;
   reg  baudClockX64Sync2;
+  reg  rxSync1;
   reg  _zz_1;
   reg  _zz_2;
   reg  _zz_3;
-  reg  _zz_4;
-  reg  _zz_5;
-  reg  _zz_6;
   reg [7:0] rdata;
   reg  ready;
   wire  busCycle;
-  reg  _zz_7;
-  assign _zz_13 = (baudClockX64Sync2 && (! _zz_6));
-  assign _zz_14 = (busCycle && (! _zz_7));
-  assign _zz_15 = {24'd0, rdata};
-  assign _zz_16 = (! _zz_12);
+  reg  _zz_4;
+  assign _zz_10 = (busCycle && (! _zz_4));
+  assign _zz_11 = (bitTimer == (6'b000000));
+  assign _zz_12 = {24'd0, rdata};
+  assign _zz_13 = (! _zz_9);
   Fifo fifo_1 ( 
     .io_dataIn(shifter),
-    .io_dataOut(_zz_10),
-    .io_read(_zz_8),
-    .io_write(_zz_9),
-    .io_full(_zz_11),
-    .io_empty(_zz_12),
+    .io_dataOut(_zz_7),
+    .io_read(_zz_5),
+    .io_write(_zz_6),
+    .io_full(_zz_8),
+    .io_empty(_zz_9),
     .clk(clk),
     .reset(reset) 
   );
-  assign next_1 = (3'b000);
   always @ (*) begin
-    _zz_8 = 1'b0;
-    if(_zz_14)begin
+    _zz_5 = 1'b0;
+    if(_zz_10)begin
       case(io_mem_addr)
         4'b0000 : begin
-          _zz_8 = 1'b1;
+          _zz_5 = 1'b1;
         end
         4'b0100 : begin
         end
@@ -154,112 +150,93 @@ module AsyncReceiver (
   end
 
   always @ (*) begin
-    _zz_9 = 1'b0;
+    _zz_6 = 1'b0;
     case(state)
-      3'b000 : begin
+      2'b00 : begin
       end
-      3'b001 : begin
+      2'b01 : begin
       end
-      3'b010 : begin
-      end
-      3'b011 : begin
-      end
-      3'b100 : begin
-        if(_zz_13)begin
-          if((! _zz_11))begin
-            _zz_9 = 1'b1;
-          end
-        end
+      2'b10 : begin
       end
       default : begin
+        if(_zz_11)begin
+          if((rxSync1 == 1'b1))begin
+            if((! _zz_8))begin
+              _zz_6 = 1'b1;
+            end
+          end
+        end
       end
     endcase
   end
 
   assign busCycle = (io_mem_valid && io_enable);
-  assign io_mem_rdata = (busCycle ? _zz_15 : (32'b00000000000000000000000000000000));
+  assign io_mem_rdata = (busCycle ? _zz_12 : (32'b00000000000000000000000000000000));
   assign io_mem_ready = (busCycle ? ready : 1'b0);
   always @ (posedge clk or posedge reset) begin
     if (reset) begin
-      state <= (3'b000);
+      state <= (2'b00);
       bitTimer <= (6'b000000);
       bitCount <= (3'b000);
       shifter <= (8'b00000000);
       baudClockX64Sync1 <= 1'b0;
       baudClockX64Sync2 <= 1'b0;
+      rxSync1 <= 1'b0;
       rdata <= (8'b00000000);
       ready <= 1'b0;
     end else begin
       baudClockX64Sync1 <= io_baudClockX64;
       baudClockX64Sync2 <= baudClockX64Sync1;
+      rxSync1 <= io_rx;
       if((baudClockX64Sync2 && (! _zz_1)))begin
         bitTimer <= (bitTimer - (6'b000001));
       end
       case(state)
-        3'b000 : begin
-          state <= (3'b000);
-          if((baudClockX64Sync2 && (! _zz_2)))begin
-            if((io_rx == 1'b0))begin
-              state <= (3'b001);
-              bitTimer <= (6'b011111);
+        2'b00 : begin
+          state <= (2'b00);
+          if(((! rxSync1) && _zz_2))begin
+            state <= (2'b01);
+            bitTimer <= (6'b011111);
+          end
+        end
+        2'b01 : begin
+          state <= (2'b01);
+          if((bitTimer == (6'b000000)))begin
+            if((rxSync1 == 1'b0))begin
+              bitTimer <= (6'b111111);
+              state <= (2'b10);
+            end else begin
+              state <= (2'b00);
             end
           end
         end
-        3'b001 : begin
-          state <= (3'b001);
+        2'b10 : begin
+          state <= (2'b10);
           if((baudClockX64Sync2 && (! _zz_3)))begin
             if((bitTimer == (6'b000000)))begin
-              if((io_rx == 1'b0))begin
-                bitTimer <= (6'b111111);
-                state <= (3'b010);
-              end else begin
-                state <= (3'b000);
-              end
-            end
-          end
-        end
-        3'b010 : begin
-          state <= (3'b010);
-          if((baudClockX64Sync2 && (! _zz_4)))begin
-            if((bitTimer == (6'b000000)))begin
-              shifter[bitCount] <= io_rx;
+              shifter[bitCount] <= rxSync1;
               bitCount <= (bitCount + (3'b001));
               if((bitCount == (3'b111)))begin
-                state <= (3'b011);
+                state <= (2'b11);
               end
             end
-          end
-        end
-        3'b011 : begin
-          state <= (3'b011);
-          if((baudClockX64Sync2 && (! _zz_5)))begin
-            if((bitTimer == (6'b000000)))begin
-              if((io_rx == 1'b1))begin
-                state <= (3'b100);
-              end else begin
-                state <= (3'b000);
-              end
-            end
-          end
-        end
-        3'b100 : begin
-          state <= (3'b100);
-          if(_zz_13)begin
-            state <= (3'b000);
           end
         end
         default : begin
-          state <= (3'b000);
+          state <= (2'b11);
+          if(_zz_11)begin
+            state <= (2'b00);
+          end
         end
       endcase
       ready <= busCycle;
-      if(_zz_14)begin
+      if(_zz_10)begin
         case(io_mem_addr)
           4'b0000 : begin
-            rdata <= _zz_10;
+            rdata <= _zz_7;
           end
           4'b0100 : begin
-            rdata <= {7'd0, _zz_16};
+            rdata <= {7'd0, _zz_13};
           end
           default : begin
           end
@@ -270,27 +247,15 @@ module AsyncReceiver (
 
   always @ (posedge clk) begin
     _zz_1 <= baudClockX64Sync2;
-    _zz_7 <= busCycle;
+    _zz_4 <= busCycle;
   end
 
   always @ (posedge clk) begin
-    _zz_2 <= baudClockX64Sync2;
+    _zz_2 <= rxSync1;
   end
 
   always @ (posedge clk) begin
     _zz_3 <= baudClockX64Sync2;
-  end
-
-  always @ (posedge clk) begin
-    _zz_4 <= baudClockX64Sync2;
-  end
-
-  always @ (posedge clk) begin
-    _zz_5 <= baudClockX64Sync2;
-  end
-
-  always @ (posedge clk) begin
-    _zz_6 <= baudClockX64Sync2;
   end
 
 endmodule
