@@ -45,17 +45,17 @@ for i in range(nwords):
     if i < len(bindata) // 4:
         w = bindata[4*i : 4*i+4]
         print("%02x%02x%02x%02x" % (w[3], w[2], w[1], w[0]))
-        print("%02x" % (w[0]), file=h0)
-        print("%02x" % (w[1]), file=h1)
-        print("%02x" % (w[2]), file=h2)
-        print("%02x" % (w[3]), file=h3)
+        print("%02X" % (w[0]), file=h0)
+        print("%02X" % (w[1]), file=h1)
+        print("%02X" % (w[2]), file=h2)
+        print("%02X" % (w[3]), file=h3)
         print("%04x : %08x;" % (i  ,(w[3] << 24) + (w[2] << 16) + (w[1] << 8) + w[0]) , file=mif)
     else:
         print("0")
-        print("%02x" % (0),            file=h0)
-        print("%02x" % (0),            file=h1)
-        print("%02x" % (0),            file=h2)
-        print("%02x" % (0),            file=h3)
+        print("%02X" % (0),            file=h0)
+        print("%02X" % (0),            file=h1)
+        print("%02X" % (0),            file=h2)
+        print("%02X" % (0),            file=h3)
         print("%04x : %08x;" % (i, 0), file=mif)
 
 print ("END;", file=mif)
