@@ -313,16 +313,16 @@ module xoro_top (input CLOCK_50,
     */
    
 
-   memory mem (
+   Memory mem (
                .clk(CLOCK),
-               .enable(enables[7]),
-               .mem_valid(mem_valid),
-               .mem_ready(mem_ready_memory),
-               .mem_instr(mem_instr),
-               .mem_wstrb(mem_wstrb),
-               .mem_wdata(mem_wdata),
-               .mem_addr(mem_addr),
-               .mem_rdata(mem_rdata_memory)
+               .io_enable(enables[7]),
+               .io_mem_valid(mem_valid),
+               .io_mem_ready(mem_ready_memory),
+               .io_mem_instr(mem_instr),
+               .io_mem_wstrb(mem_wstrb),
+               .io_mem_wdata(mem_wdata),
+               .io_mem_addr(mem_addr),
+               .io_mem_rdata(mem_rdata_memory)
 	       );
 
 
